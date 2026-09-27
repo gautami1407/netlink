@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ar<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -134,18 +134,51 @@ input,textarea{font-family:inherit;}
 .badge.ok{background:rgba(22,163,74,.15); color:var(--success);}
 .badge.bad{background:rgba(220,38,38,.15); color:var(--danger);}
 .badge.warn{background:rgba(245,158,11,.15); color:var(--warning);}
+.phase-session-list{display:grid; gap:8px;}
+.phase-session{display:flex; align-items:center; gap:12px; padding:10px 0; border-bottom:1px solid var(--border); min-width:0;}
+.phase-session:last-child{border-bottom:none;}
+.phase-session-info{flex:1; min-width:0; display:grid; gap:4px;}
+.phase-session-id{font-size:13px; font-weight:700; overflow-wrap:anywhere;}
+.phase-session-meta{font-size:12px; color:var(--muted); display:flex; flex-wrap:wrap; gap:6px 12px;}
+.phase-session-actions{display:flex; flex-wrap:wrap; gap:6px;}
+.phase-session-actions .btn{min-width:88px; min-height:44px; padding:8px 10px;}
+.session-panel-head{display:flex; align-items:center; justify-content:space-between; gap:12px;}
+.session-panel-head h3{margin-bottom:0;}
+.session-panel-head .icon-btn{width:44px; height:44px;}
+.phase-notice{display:flex; align-items:center; justify-content:space-between; gap:12px; padding:10px 16px; background:rgba(220,38,38,.12); border-bottom:1px solid var(--danger); color:var(--text); font-size:13px;}
+.phase-notice[hidden], [hidden]{display:none !important;}
+.phase-notice .btn{min-height:44px; flex:0 0 auto;}
+.emergency-trigger{display:inline-flex; align-items:center; justify-content:center; gap:8px; min-width:44px; min-height:44px; padding:8px 12px; border:1px solid #ef4444; border-radius:8px; background:#b91c1c; color:#fff; font-size:13px; font-weight:800;}
+.emergency-trigger:hover{background:#991b1b;}
+.emergency-trigger:focus-visible, .btn:focus-visible{outline:3px solid var(--warning); outline-offset:2px;}
+.emergency-dialog{width:min(420px,calc(100vw - 32px)); margin:auto; padding:20px; border:1px solid var(--danger); border-radius:10px; background:var(--surface); color:var(--text);}
+.emergency-dialog::backdrop{background:rgba(0,0,0,.65);}
+.emergency-dialog h2{font-size:18px; margin-bottom:10px;}
+.emergency-dialog p{font-size:14px; line-height:1.5; color:var(--muted);}
+.emergency-dialog-actions{display:flex; justify-content:flex-end; flex-wrap:wrap; gap:8px; margin-top:20px;}
+.emergency-dialog-actions .btn{min-height:44px;}
+.emergency-confirm{background:#b91c1c; color:#fff;}
+.emergency-confirm:hover{background:#991b1b;}
 
 /* ---------- remote desktop ---------- */
 .rd-toolbar{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:12px; align-items:center;}
 .rd-toolbar .spacer{flex:1;}
+.screen-controls{display:flex; gap:4px; align-items:center;}
+.zoom-level{font-size:13px; color:var(--text); font-weight:600; min-width:48px; text-align:center;}
+.recording-time{font-size:13px; animation:pulse 1s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.5;}}
+.btn.recording{background:rgba(239,68,68,0.1); border-color:#ef4444; color:#ef4444;}
 .rd-stage{
   background:#000; border:1px solid var(--border); border-radius:var(--radius);
   min-height:300px; height:calc(100vh - 260px); display:flex; align-items:center; justify-content:center;
-  overflow:auto; position:relative;
+  overflow:auto; position:relative; cursor:default;
 }
-.rd-stage img{display:block;}
+.rd-stage.panning{cursor:grab;}
+.rd-stage.panning:active{cursor:grabbing;}
+.rd-stage img{display:block; transition:transform 0.2s ease; transform-origin:center;}
 .rd-stage.fit img{max-width:100%; max-height:100%; object-fit:contain;}
 .rd-stage.actual img{max-width:none;}
+.rd-stage.fullscreen{position:fixed; top:0; left:0; right:0; bottom:0; z-index:9999; border-radius:0; height:100vh; margin:0;}
 .rd-empty{color:var(--muted); font-size:14px; text-align:center; padding:20px;}
 .rd-empty .spinner{margin-bottom:10px;}
 
@@ -190,8 +223,17 @@ textarea.kbd-input{
   display:flex; align-items:center; gap:12px; padding:10px 12px; border:1px solid var(--border);
   border-radius:8px; margin-top:8px; background:var(--surface); font-size:13px;
 }
+.file-row .icon{font-size:18px; flex:0 0 auto;}
 .file-row .name{flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
-.file-row .meta{color:var(--muted); font-size:12px;}
+.file-row .meta{color:var(--muted); font-size:12px; flex:0 0 auto;}
+.file-row-actions{display:flex; gap:6px; flex-wrap:wrap; flex:0 0 auto;}
+.file-row-actions .btn{min-height:40px; padding:6px 10px;}
+.files-toolbar{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px;}
+.files-search{flex:1; min-width:160px; min-height:44px; padding:8px 12px; border-radius:8px; border:1px solid var(--border); background:var(--surface-2); color:var(--text); font-size:14px;}
+.files-sort{min-height:44px; padding:8px 10px; border-radius:8px; border:1px solid var(--border); background:var(--surface-2); color:var(--text); font-size:13px;}
+.files-filter-chips{display:flex; gap:6px; flex-wrap:wrap; margin-bottom:12px;}
+.file-chip{min-height:40px; padding:6px 14px; border-radius:999px; border:1px solid var(--border); background:var(--surface-2); color:var(--muted); font-size:12px; font-weight:700;}
+.file-chip.active{background:var(--primary); color:#fff; border-color:var(--primary);}
 .progress{height:6px; background:var(--surface-2); border-radius:999px; overflow:hidden; margin-top:6px;}
 .progress-fill{height:100%; background:var(--primary); width:0%; transition:width .2s;}
 .progress-fill.done{background:var(--success);}
@@ -201,11 +243,60 @@ textarea.kbd-input{
 .activity-row{display:flex; gap:10px; padding:9px 0; border-bottom:1px solid var(--border); font-size:13px;}
 .activity-row:last-child{border-bottom:none;}
 .activity-row .t{color:var(--muted); font-size:11px; white-space:nowrap;}
+.stat-label{font-size:11px; color:var(--muted); font-weight:600; margin-bottom:4px;}
+.stat-value{font-size:20px; font-weight:700; color:var(--text);}
+.transfer-toolbar{display:flex; align-items:flex-end; justify-content:space-between; flex-wrap:wrap; gap:12px; margin-bottom:14px;}
+.transfer-filter{display:grid; gap:5px; min-width:160px; font-size:12px; color:var(--muted); font-weight:600;}
+.transfer-filter select{min-height:44px; padding:8px 34px 8px 10px; border:1px solid var(--border); border-radius:8px; background:var(--surface); color:var(--text); font:inherit;}
+.transfer-clear-actions{display:flex; flex-wrap:wrap; gap:8px;}
+.transfer-clear-actions .btn,.transfer-actions .btn{min-height:44px;}
+.transfer-summary{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:14px;}
+.transfer-summary .badge{padding:6px 10px;}
+.transfer-group{margin:14px 0 18px;}
+.transfer-group h3{display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid var(--border); padding-bottom:8px; margin-bottom:4px; font-size:12px; text-transform:uppercase; color:var(--muted);}
+.transfer-row{display:grid; grid-template-columns:minmax(0,1fr) auto; gap:8px 14px; padding:12px 0; border-bottom:1px solid var(--border);}
+.transfer-row-main{min-width:0;}
+.transfer-row-title{display:flex; align-items:center; flex-wrap:wrap; gap:8px; font-size:14px; font-weight:700; overflow-wrap:anywhere;}
+/* Long names ellipsize instead of pushing the row wider than the viewport, so
+   the action buttons stay on screen at 360px. */
+.transfer-row-title .transfer-name{min-width:0; max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+.transfer-row-title .badge{flex:none;}
+.transfer-row-sub{display:flex; flex-wrap:wrap; gap:5px 12px; margin-top:5px; color:var(--muted); font-size:12px;}
+.transfer-row-sub span:empty{display:none;}
+.transfer-row .progress{margin-top:9px;}
+.transfer-row .progress-fill.cancelled{background:var(--warning);}
+.transfer-actions{display:flex; align-items:center; align-content:flex-start; flex-wrap:wrap; justify-content:flex-end; gap:6px;}
+.transfer-actions .btn{padding:8px 12px;}
+.transfer-speed{font-variant-numeric:tabular-nums;}
+.transfer-empty{padding:16px 0; color:var(--muted); font-size:13px;}
 
 /* ---------- settings ---------- */
 .seg{display:flex; border:1px solid var(--border); border-radius:8px; overflow:hidden; width:fit-content;}
 .seg button{background:var(--surface); color:var(--text); border:none; padding:8px 16px; font-size:13px; font-weight:600;}
 .seg button.active{background:var(--primary); color:#fff;}
+.screen-group-label{display:block; margin:0 0 6px; color:var(--muted); font-size:11px; font-weight:700; letter-spacing:.05em; text-transform:uppercase;}
+.screen-profile-options{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; margin-bottom:16px;}
+.screen-fps-options{display:grid; grid-template-columns:repeat(4,minmax(44px,1fr)); gap:8px; margin:8px 0 12px;}
+.screen-choice{min-width:0; min-height:48px; border:1px solid var(--border); border-radius:8px; background:var(--surface-2); color:var(--text); padding:6px; font-size:13px; font-weight:700;}
+.screen-choice small{display:block; margin-top:2px; color:var(--muted); font-size:10px; font-weight:500;}
+.screen-choice[aria-pressed="true"]{background:var(--primary); border-color:var(--primary); color:#fff;}
+.screen-choice[aria-pressed="true"] small{color:#fff;}
+/* The readout keeps the four facts on separate rows so a target value is
+   never presented as a measurement, and so "profile" is never worded as if
+   it changed image resolution or JPEG quality (it does not). */
+.screen-config-status{margin-top:12px; padding:10px 0 0; border-top:1px solid var(--border); display:grid; gap:7px; font-size:12px;}
+.screen-config-row{display:flex; align-items:baseline; justify-content:space-between; gap:10px;}
+.screen-config-row .k{color:var(--muted); flex:none;}
+.screen-config-row .v{font-weight:700; text-align:right; overflow-wrap:anywhere; font-variant-numeric:tabular-nums;}
+.screen-config-row .v.measured{color:var(--primary);}
+.screen-health{display:inline-flex; align-items:center; gap:6px;}
+.screen-health::before{content:''; width:9px; height:9px; border-radius:50%; background:var(--muted); flex:none;}
+.screen-health[data-health="healthy"]::before{background:var(--success);}
+.screen-health[data-health="starting"]::before,.screen-health[data-health="degraded"]::before{background:var(--warning);}
+.screen-health[data-health="stale"]::before,.screen-health[data-health="disconnected"]::before{background:var(--danger);}
+.screen-config-pending{color:var(--warning); font-size:11px; font-weight:700;}
+.screen-config-pending:empty{display:none;}
+.screen-config-note{margin-top:10px; color:var(--muted); font-size:11px; line-height:1.45;}
 
 /* ---------- toast ---------- */
 #toasts{position:fixed; bottom:16px; right:16px; z-index:100; display:flex; flex-direction:column; gap:8px; max-width:320px;}
@@ -225,6 +316,26 @@ textarea.kbd-input{
   #sidebar.open{transform:translateX(0);}
   #sidebarOverlay.open{display:block;}
   .rd-stage{height:50vh;}
+}
+@media (max-width: 540px){
+  #topbar{gap:4px; padding-left:8px; padding-right:8px;}
+  .emergency-trigger{width:44px; padding:8px;}
+  .emergency-label{display:none;}
+  #topStatusPill{padding:5px 7px; max-width:92px; min-width:0; overflow:hidden; white-space:nowrap;}
+  #topStatusText{min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  #topbar .icon-btn{flex:0 0 34px;}
+  #latencyLabel{display:none;}
+  .phase-session{align-items:flex-start; flex-direction:column;}
+  .phase-session-actions{width:100%;}
+  .phase-session-actions .btn{flex:1;}
+  .phase-notice{align-items:flex-start; flex-direction:column; padding:10px 12px;}
+  .transfer-toolbar{align-items:stretch;}
+  .transfer-filter{width:100%;}
+  .transfer-clear-actions{width:100%;}
+  .transfer-clear-actions .btn{flex:1; padding-left:8px; padding-right:8px;}
+  .transfer-row{grid-template-columns:minmax(0,1fr);}
+  .transfer-actions{justify-content:flex-start;}
+  .transfer-actions .btn{flex:1;}
 }
 </style>
 </head>
@@ -250,12 +361,20 @@ textarea.kbd-input{
   <div id="topbar">
     <button id="hamburger" onclick="Dexile.toggleSidebar()">☰</button>
     <div class="brand"><span class="dot"></span> Dexile</div>
+    <button class="emergency-trigger" id="emergencyStopButton" type="button" aria-label="Emergency Stop" title="Emergency Stop" onclick="Dexile.openEmergencyConfirmation()" hidden><span aria-hidden="true">■</span><span class="emergency-label">Emergency Stop</span></button>
     <div id="topbar-spacer"></div>
     <div class="status-pill" id="topStatusPill"><span class="dot"></span><span id="topStatusText">Disconnected</span></div>
     <span class="status-line" id="latencyLabel" style="min-height:auto;"></span>
     <button class="icon-btn" title="Fullscreen" onclick="Dexile.toggleFullscreen()">⛶</button>
     <button class="icon-btn" title="Settings" onclick="Dexile.navigate('settings')">⚙</button>
     <button class="icon-btn" title="Disconnect" onclick="Dexile.disconnect()">⏻</button>
+  </div>
+  <div class="phase-notice" id="phaseNotice" role="status" aria-live="polite" hidden>
+    <span id="phaseNoticeText"></span>
+    <button class="btn btn-ghost" type="button" onclick="Dexile.returnToConnect()">Connect again</button>
+  </div>
+  <div class="phase-notice" id="reconnectNotice" role="status" aria-live="polite" hidden style="background:rgba(245,158,11,.12); border-bottom-color:var(--warning);">
+    <span>Connection lost. Reconnecting...</span>
   </div>
 
   <div id="body">
@@ -284,6 +403,11 @@ textarea.kbd-input{
           <div class="panel"><h3>Connection</h3><div id="dashConnection"></div></div>
           <div class="panel"><h3>Remote Control</h3><div id="dashCapabilities"></div></div>
           <div class="panel"><h3>Files</h3><div id="dashFiles"></div></div>
+          <div class="panel" id="sessionPanel">
+            <div class="session-panel-head"><h3>Active Sessions</h3><button class="icon-btn" type="button" title="Refresh sessions" aria-label="Refresh sessions" onclick="Dexile.refreshSessions()">↻</button></div>
+            <div id="sessionActionNotice" class="status-line" style="text-align:left; margin:8px 0;" aria-live="polite"></div>
+            <div id="dashSessions" class="phase-session-list"><div class="status-line">Waiting for session status.</div></div>
+          </div>
         </div>
         <div class="panel" style="margin-top:14px;">
           <h3>Recent Activity</h3>
@@ -302,6 +426,17 @@ textarea.kbd-input{
             <button id="actualBtn" onclick="Dexile.setFitMode('actual')">1:1</button>
           </div>
           <div class="spacer"></div>
+          <div class="screen-controls">
+            <button class="icon-btn" title="Zoom Out" onclick="Dexile.zoomScreen('out')">-</button>
+            <span class="zoom-level" id="zoomLevel">100%</span>
+            <button class="icon-btn" title="Zoom In" onclick="Dexile.zoomScreen('in')">+</button>
+            <button class="icon-btn" title="Reset Zoom" onclick="Dexile.zoomScreen('reset')" style="margin-left:8px;">⊙</button>
+            <button class="icon-btn" title="Rotate Screen" onclick="Dexile.rotateScreen()" style="margin-left:8px;">↻</button>
+            <button class="icon-btn" title="Fullscreen" onclick="Dexile.toggleRemoteFullscreen()">⛶</button>
+            <button class="btn btn-ghost" id="screenshotBtn" onclick="Dexile.captureScreenshot()" style="margin-left:8px;">📸 Screenshot</button>
+            <button class="btn btn-ghost" id="recordBtn" onclick="Dexile.toggleRecording()" style="margin-left:4px;">⏺ Record</button>
+            <span class="recording-time" id="recordingTime" style="display:none; margin-left:4px; color:red; font-weight:600;">0:00</span>
+          </div>
           <span class="status-line" id="rdStats" style="min-height:auto;"></span>
         </div>
         <div class="rd-stage fit" id="rdStage">
@@ -364,23 +499,56 @@ textarea.kbd-input{
       <!-- FILES -->
       <div class="view" id="view-files">
         <div class="view-title">Files</div>
-        <div class="view-sub">Upload sends mobile → desktop. Files listed as "On desktop" can be downloaded to this device.</div>
+        <div class="view-sub">Upload sends mobile → desktop. Shared files (from either device) can be viewed, downloaded, or deleted below.</div>
         <div class="dropzone" id="dropzone">
           <div>📁 Drag &amp; drop files here, or</div>
           <input type="file" id="fileInput" multiple style="display:none;">
           <button class="btn btn-ghost" style="margin-top:10px;" onclick="document.getElementById('fileInput').click()">Select files</button>
         </div>
         <div class="panel" style="margin-top:16px;">
-          <h3>On desktop (available to download)</h3>
-          <div id="outgoingList"><div class="status-line">Loading…</div></div>
+          <h3>Shared Files</h3>
+          <div class="files-toolbar">
+            <input type="search" id="filesSearchInput" class="files-search" placeholder="Search files…" aria-label="Search files" oninput="Dexile.setFilesSearch(this.value)">
+            <select id="filesSortSelect" class="files-sort" aria-label="Sort files" onchange="Dexile.setFilesSort(this.value)">
+              <option value="newest">Newest</option>
+              <option value="oldest">Oldest</option>
+              <option value="name">Name</option>
+              <option value="size">Size</option>
+            </select>
+          </div>
+          <div class="files-filter-chips" id="filesFilterChips">
+            <button class="file-chip active" type="button" data-filter="all" onclick="Dexile.setFilesFilter('all')">All</button>
+            <button class="file-chip" type="button" data-filter="image" onclick="Dexile.setFilesFilter('image')">Images</button>
+            <button class="file-chip" type="button" data-filter="video" onclick="Dexile.setFilesFilter('video')">Videos</button>
+            <button class="file-chip" type="button" data-filter="document" onclick="Dexile.setFilesFilter('document')">Documents</button>
+            <button class="file-chip" type="button" data-filter="audio" onclick="Dexile.setFilesFilter('audio')">Audio</button>
+            <button class="file-chip" type="button" data-filter="other" onclick="Dexile.setFilesFilter('other')">Other</button>
+          </div>
+          <div id="sharedFilesList"><div class="status-line">Loading…</div></div>
         </div>
       </div>
 
       <!-- TRANSFERS -->
       <div class="view" id="view-transfers">
         <div class="view-title">Transfers</div>
-        <div class="view-sub">Real-time status of uploads and downloads for this session.</div>
-        <div id="transferList"><div class="status-line">No transfers yet.</div></div>
+        <div class="view-sub">Uploads and downloads for this connection.</div>
+        <div class="transfer-toolbar">
+          <label class="transfer-filter" for="transferFilter">Show
+            <select id="transferFilter" onchange="Dexile.setTransferFilter(this.value)">
+              <option value="all">All transfers</option>
+              <option value="active">Active and queued</option>
+              <option value="completed">Completed</option>
+              <option value="failed">Failed</option>
+              <option value="cancelled">Cancelled</option>
+            </select>
+          </label>
+          <div class="transfer-clear-actions">
+            <button class="btn btn-ghost" type="button" onclick="Dexile.clearTransfers('Completed')">Clear completed</button>
+            <button class="btn btn-ghost" type="button" onclick="Dexile.clearTransfers('Failed')">Clear failed</button>
+          </div>
+        </div>
+        <div class="transfer-summary" id="transferSummary" aria-live="polite"></div>
+        <div id="transferList"><div class="transfer-empty">No transfers yet.</div></div>
       </div>
 
       <!-- DEVICE INFO -->
@@ -392,9 +560,49 @@ textarea.kbd-input{
 
       <!-- ACTIVITY -->
       <div class="view" id="view-activity">
-        <div class="view-title">Activity</div>
-        <div class="view-sub">A live log of real events on this connection.</div>
-        <div class="panel"><div id="activityFull"><div class="status-line">No activity yet.</div></div></div>
+        <div class="view-title">Activity & Diagnostics</div>
+        <div class="view-sub">Live activity log and system diagnostics.</div>
+        
+        <div class="panel">
+          <h3>System Diagnostics</h3>
+          <div class="grid grid-3" style="gap:12px; margin-bottom:12px;">
+            <div>
+              <div class="stat-label">Latency</div>
+              <div class="stat-value" id="diagLatency">--</div>
+            </div>
+            <div>
+              <div class="stat-label">Frame Rate</div>
+              <div class="stat-value" id="diagFPS">--</div>
+            </div>
+            <div>
+              <div class="stat-label">Uptime</div>
+              <div class="stat-value" id="diagUptime">--</div>
+            </div>
+          </div>
+          <div class="grid grid-3" style="gap:12px;">
+            <div>
+              <div class="stat-label">Messages Sent</div>
+              <div class="stat-value" id="diagMessagesSent">0</div>
+            </div>
+            <div>
+              <div class="stat-label">Messages Received</div>
+              <div class="stat-value" id="diagMessagesReceived">0</div>
+            </div>
+            <div>
+              <div class="stat-label">Errors</div>
+              <div class="stat-value" id="diagErrors">0</div>
+            </div>
+          </div>
+          <div style="margin-top:12px;">
+            <button class="btn btn-ghost" onclick="Dexile.exportDiagnostics()">📥 Export Diagnostics</button>
+            <button class="btn btn-ghost" onclick="Dexile.refreshDiagnostics()">🔄 Refresh</button>
+          </div>
+        </div>
+        
+        <div class="panel" style="margin-top:14px;">
+          <h3>Activity Log</h3>
+          <div id="activityFull"><div class="status-line">No activity yet.</div></div>
+        </div>
       </div>
 
       <!-- SETTINGS -->
@@ -410,10 +618,82 @@ textarea.kbd-input{
             </div>
           </div>
           <div class="panel">
-            <h3>Screen streaming</h3>
+            <h3>Stream profile</h3>
+            <span class="screen-group-label" id="screenProfileLabel">Quality Profile</span>
+            <div class="screen-profile-options" role="group" aria-labelledby="screenProfileLabel">
+              <button class="screen-choice" type="button" data-screen-quality="LOW" aria-pressed="false" onclick="Dexile.setScreenQuality('LOW')">Low<small>3 FPS capture</small></button>
+              <button class="screen-choice" type="button" data-screen-quality="BALANCED" aria-pressed="true" onclick="Dexile.setScreenQuality('BALANCED')">Balanced<small>6 FPS capture</small></button>
+              <button class="screen-choice" type="button" data-screen-quality="HIGH" aria-pressed="false" onclick="Dexile.setScreenQuality('HIGH')">High<small>15 FPS capture</small></button>
+            </div>
             <div class="field">
-              <label for="fpsRange">Target FPS: <span id="fpsVal">6</span></label>
-              <input type="range" id="fpsRange" min="1" max="15" value="6" oninput="Dexile.setFps(this.value)">
+              <label id="screenFpsLabel">Target FPS</label>
+              <div class="screen-fps-options" role="group" aria-labelledby="screenFpsLabel">
+                <button class="screen-choice" type="button" data-screen-fps="10" aria-pressed="false" onclick="Dexile.setScreenTargetFps(10)">10</button>
+                <button class="screen-choice" type="button" data-screen-fps="15" aria-pressed="false" onclick="Dexile.setScreenTargetFps(15)">15</button>
+                <button class="screen-choice" type="button" data-screen-fps="20" aria-pressed="false" onclick="Dexile.setScreenTargetFps(20)">20</button>
+                <button class="screen-choice" type="button" data-screen-fps="30" aria-pressed="false" onclick="Dexile.setScreenTargetFps(30)">30</button>
+              </div>
+            </div>
+            <div class="screen-config-status" id="screenConfigStatus" aria-live="polite">
+              <div class="screen-config-row"><span class="k">Stream profile</span><span class="v" id="screenProfileValue">Balanced</span></div>
+              <div class="screen-config-row"><span class="k">Target FPS</span><span class="v" id="screenTargetValue">6</span></div>
+              <div class="screen-config-row"><span class="k">Measured FPS</span><span class="v measured" id="screenMeasuredValue">N/A</span></div>
+              <div class="screen-config-row"><span class="k">Stream</span><span class="v"><span class="screen-health" id="screenStreamValue" data-health="idle">Idle</span></span></div>
+              <div class="screen-config-row"><span class="k">Latency</span><span class="v" id="screenLatencyValue">N/A</span></div>
+              <div class="screen-config-pending" id="screenConfigPending"></div>
+            </div>
+            <div class="screen-config-note">Profiles and Target FPS change how often the screen is captured. Resolution and JPEG quality stay fixed: the installed capture library exposes no quality or scale options.</div>
+          </div>
+          <div class="panel">
+            <h3>Clipboard Sync</h3>
+            <div class="field">
+              <label>
+                <input type="checkbox" id="clipboardEnabled" onchange="Dexile.toggleClipboard(this.checked)">
+                Enable clipboard sync (text only)
+              </label>
+            </div>
+            <div class="screen-config-note" style="margin-top:8px;">
+              When enabled, text copied on this device will be sent to the server and vice versa. 
+              Only plain text is synced (max 50KB). Images and files are not supported. 
+              Clipboard content is never logged or persisted.
+            </div>
+          </div>
+          <div class="panel">
+            <h3>Remote Audio</h3>
+            <div class="field">
+              <label>
+                <input type="checkbox" id="audioEnabled" onchange="Dexile.toggleAudio(this.checked)">
+                Enable audio streaming
+              </label>
+            </div>
+            <div id="audioControls" style="display:none; margin-top:8px;">
+              <div class="field">
+                <label style="font-size:13px;">
+                  Volume: <input type="range" id="audioVolume" min="0" max="100" value="100" 
+                    onchange="Dexile.setAudioVolume(this.value)" style="width:120px; vertical-align:middle;">
+                  <span id="audioVolumeLabel">100%</span>
+                </label>
+              </div>
+            </div>
+            <div class="screen-config-note" style="margin-top:8px;">
+              Stream audio from the server to this device. Requires server support for audio capture.
+              Volume control applies locally to audio playback.
+            </div>
+          </div>
+          <div class="panel">
+            <h3>Media Controller</h3>
+            <div class="field">
+              <p id="mediaInfo" style="font-size:13px; color:var(--muted); margin-bottom:8px;">No media playing</p>
+            </div>
+            <div id="mediaControls" style="display:flex; gap:4px; flex-wrap:wrap;">
+              <button class="btn btn-ghost" onclick="Dexile.mediaControl('previous')" title="Previous Track">⏮</button>
+              <button class="btn btn-ghost" id="mediaPlayPause" onclick="Dexile.mediaControl('playpause')" title="Play/Pause">⏯</button>
+              <button class="btn btn-ghost" onclick="Dexile.mediaControl('stop')" title="Stop">⏹</button>
+              <button class="btn btn-ghost" onclick="Dexile.mediaControl('next')" title="Next Track">⏭</button>
+            </div>
+            <div class="screen-config-note" style="margin-top:8px;">
+              Control media playback on the server (Windows Media, Spotify, YouTube, etc.). 
+              Requires Windows Media Control support on the server.
             </div>
           </div>
           <div class="panel">
@@ -428,6 +708,23 @@ textarea.kbd-input{
 </div>
 
 <div id="toasts"></div>
+<dialog class="emergency-dialog" id="fileDeleteDialog" aria-labelledby="fileDeleteDialogTitle" aria-describedby="fileDeleteDialogMessage">
+  <h2 id="fileDeleteDialogTitle">Delete file?</h2>
+  <p id="fileDeleteDialogMessage"></p>
+  <div class="emergency-dialog-actions">
+    <button class="btn btn-ghost" type="button" onclick="Dexile.cancelDeleteFile()">Cancel</button>
+    <button class="btn emergency-confirm" type="button" onclick="Dexile.confirmDeleteFile()">Delete</button>
+  </div>
+</dialog>
+
+<dialog class="emergency-dialog" id="emergencyDialog" aria-labelledby="emergencyDialogTitle" aria-describedby="emergencyDialogMessage">
+  <h2 id="emergencyDialogTitle">Stop all active sessions?</h2>
+  <p id="emergencyDialogMessage">Remote control sessions and screen streams will be stopped. The server will remain running.</p>
+  <div class="emergency-dialog-actions">
+    <button class="btn btn-ghost" type="button" onclick="Dexile.closeEmergencyConfirmation()">Cancel</button>
+    <button class="btn emergency-confirm" type="button" onclick="Dexile.confirmEmergencyStop()">Stop all sessions</button>
+  </div>
+</dialog>
 
 <script>
 (function(){
@@ -439,27 +736,96 @@ const state = {
   reconnecting: false,
   manualDisconnect: false,
   clientId: null,
+  session: null,
+  sessions: [],
+  connectionQuality: null,
+  sessionActionNotice: '',
+  pendingSessionAction: null,
+  sessionRenderSignature: null,
+  emergencyStopped: false,
+  emergencyStopPending: false,
+  sessionTerminated: false,
   capabilities: {},
   device: {},
   serverAddr: '',
   authCode: '',
   latencyMs: null,
   pingInterval: null,
+  sessionRefreshTicks: 0,
   reconnectAttempts: 0,
   screenSubscribed: false,
+  screenQuality: 'BALANCED',
   screenFps: 6,
+  measuredScreenFps: null,
+  lastFrameReceivedAt: null,
+  pendingScreenConfig: null,
   lastFrameTime: 0,
   frameCount: 0,
   fitMode: 'fit',
+  screenZoom: 100, // zoom percentage
+  screenRotation: 0, // degrees: 0, 90, 180, 270
+  screenPanX: 0, // pan offset in pixels
+  screenPanY: 0,
+  isPanning: false,
+  panStartX: 0,
+  panStartY: 0,
+  remoteFullscreen: false,
+  isRecording: false,
+  recordingStartTime: null,
+  recordingDuration: 0,
+  recordingMaxDuration: 60000, // 60 seconds max
+  recordingUpdateInterval: null,
+  audioEnabled: false,
+  audioStream: null,
+  audioContext: null,
+  audioVolume: 1.0,
   modifiers: { ctrlKey: false, altKey: false, shiftKey: false },
-  transfers: new Map(), // transferId -> {filename, direction, progress, status}
+    transfers: new Map(),
+    pendingUploadStart: null,
+    pendingDownloadStarts: [],
+    transferFilter: 'all',
+    transferSequence: 0,
   activity: [],
+  diagnostics: {
+    messagesSent: 0,
+    messagesReceived: 0,
+    errors: 0,
+    sessionStart: null,
+    lastLatencyCheck: 0,
+    latencyMs: null
+  },
   uploadQueue: [],
   downloadBuffers: new Map(), // transferId -> {chunks:[], fileSize, filename, chunkSize}
+  downloadedBlobs: new Map(), // transferId -> {filename, mimeType, size, blob, url} - bounded local copy of completed downloads
+  sharedFiles: [], // last shared_file_list payload (both from-laptop and from-phone)
+  filesSearch: '',
+  filesFilter: 'all',
+  filesSort: 'newest',
+  filesLoading: false,
+  filesError: null,
+  filesBusy: new Set(), // `${location}::${filename}` currently downloading/previewing/deleting
+  pendingDelete: null, // {filename, location} awaiting confirmation
+  clipboardEnabled: false, // opt-in clipboard sync
+  lastClipboardText: '', // prevent redundant syncs
+  clipboardMaxSize: 50000, // 50KB limit for clipboard text
+  clipboardPollInterval: null, // interval ID for clipboard polling
 };
+const SCREEN_PROFILE_DEFAULT_FPS = { LOW: 3, BALANCED: 6, HIGH: 15 };
+const SCREEN_PROFILE_LABELS = { LOW: 'Low', BALANCED: 'Balanced', HIGH: 'High' };
+const SCREEN_CONFIG_FPS = new Set([10, 15, 20, 30]);
 
 function $(id){ return document.getElementById(id); }
 function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+// Long names are shortened for display only; the full name stays in the title
+// attribute and is always escaped before it reaches the DOM.
+function shortenFilename(name, max = 34){
+  const value = String(name == null ? '' : name);
+  if (value.length <= max) return value;
+  const dot = value.lastIndexOf('.');
+  const ext = dot > 0 && value.length - dot <= 12 ? value.slice(dot) : '';
+  const head = Math.max(1, max - ext.length - 1);
+  return ext ? `${value.slice(0, head)}…${ext}` : `${value.slice(0, Math.max(1, max - 1))}…`;
+}
 function fmtBytes(n){
   if (n === 0 || n == null) return '0 Bytes';
   const k = 1024, sizes = ['Bytes','KB','MB','GB'];
@@ -478,6 +844,9 @@ function toast(msg, isError){
 }
 
 // ---------------------------------------------------------------- connect
+// A device connects with a server address and the auth code from the server
+// console. That is the only way in: there is no QR, pairing, or trusted-device
+// shortcut, so entering an address here is always required.
 
 function connect(){
   const addr = $('serverAddr').value.trim();
@@ -487,6 +856,16 @@ function connect(){
   state.authCode = code;
   state.manualDisconnect = false;
   state.reconnectAttempts = 0;
+  state.session = null;
+  state.sessions = [];
+  state.connectionQuality = null;
+  state.sessionActionNotice = '';
+  state.pendingSessionAction = null;
+  state.latencyMs = null;
+  state.emergencyStopped = false;
+  state.emergencyStopPending = false;
+  state.sessionTerminated = false;
+  $('phaseNotice').hidden = true;
   openSocket();
 }
 
@@ -507,7 +886,7 @@ function openSocket(){
   const connectTimeout = setTimeout(() => {
     if (ws.readyState !== WebSocket.OPEN) {
       ws.close();
-      setConnectStatus('Connection timed out. Check the address and that the server is running.', true);
+      setConnectStatus('Connection timed out. Check the server address and network connection.', true);
       $('connectBtn').disabled = false;
     }
   }, 8000);
@@ -519,8 +898,9 @@ function openSocket(){
   };
 
   ws.onmessage = (evt) => {
+    trackMessageReceived();
     let data;
-    try { data = JSON.parse(evt.data); } catch(e){ return; }
+    try { data = JSON.parse(evt.data); } catch(e){ trackError(); return; }
     handleServerMessage(data);
   };
 
@@ -530,10 +910,17 @@ function openSocket(){
     state.connected = false;
     updateTopStatus();
     stopPing();
+    handleTransferConnectionLost();
     if (state.manualDisconnect) {
       showConnectScreen();
       setConnectStatus('');
       $('connectBtn').disabled = false;
+      return;
+    }
+    if (state.emergencyStopped || state.sessionTerminated) {
+      state.reconnecting = false;
+      updateTopStatus();
+      renderPhaseOnePanels();
       return;
     }
     if (wasConnected) {
@@ -548,6 +935,7 @@ function openSocket(){
 }
 
 function attemptReconnect(){
+  if (state.emergencyStopped || state.sessionTerminated) return;
   state.reconnecting = true;
   updateTopStatus();
   state.reconnectAttempts += 1;
@@ -558,7 +946,23 @@ function attemptReconnect(){
     return;
   }
   const delay = Math.min(1000 * state.reconnectAttempts, 8000);
+  
+  // Update UI every second to show countdown
+  let remainingSeconds = Math.ceil(delay / 1000);
+  const countdownInterval = setInterval(() => {
+    remainingSeconds -= 1;
+    if (remainingSeconds > 0) {
+      const reconnectNotice = $('reconnectNotice');
+      if (reconnectNotice && state.reconnecting) {
+        reconnectNotice.textContent = `Connection lost. Retrying in ${remainingSeconds}s... (Attempt ${state.reconnectAttempts}/8)`;
+      }
+    } else {
+      clearInterval(countdownInterval);
+    }
+  }, 1000);
+  
   setTimeout(() => {
+    clearInterval(countdownInterval);
     if (state.manualDisconnect) return;
     openSocket();
   }, delay);
@@ -591,6 +995,7 @@ function showApp(){
 function send(obj){
   if (state.ws && state.ws.readyState === WebSocket.OPEN) {
     state.ws.send(JSON.stringify(obj));
+    trackMessageSent();
   }
 }
 
@@ -603,17 +1008,27 @@ function handleServerMessage(data){
       state.reconnecting = false;
       state.reconnectAttempts = 0;
       state.clientId = data.clientId;
+      state.session = data.session || { id: data.clientId, role: 'client' };
+      state.screenQuality = state.session.screenQuality || 'BALANCED';
+      state.screenFps = Number.isInteger(state.session.targetFps) ? state.session.targetFps : 6;
       state.capabilities = data.capabilities || {};
       state.device = data.device || {};
+      state.diagnostics.sessionStart = Date.now();
+      state.diagnostics.messagesSent = 0;
+      state.diagnostics.messagesReceived = 0;
+      state.diagnostics.errors = 0;
+      state.diagnostics.latencyMs = null;
       $('connectBtn').disabled = false;
       showApp();
       updateTopStatus();
       renderCapabilityGating();
+      applySessionTelemetry({ sessions: [], connectionQuality: null });
       renderDashboard();
       renderDeviceInfo();
       startPing();
       refreshStatus();
       handleListFiles(); // pre-warm the files view
+      checkLatency(); // Initial latency check
       if (state.screenWasSubscribed) toggleScreenSubscribe(true);
       break;
 
@@ -624,9 +1039,12 @@ function handleServerMessage(data){
       break;
 
     case 'pong': {
-      const rtt = Date.now() - data.clientTime;
-      state.latencyMs = rtt;
-      $('latencyLabel').textContent = rtt + ' ms';
+      if (Number.isFinite(data.clientTime)) {
+        const rtt = Math.max(0, Date.now() - data.clientTime);
+        state.latencyMs = rtt;
+        $('latencyLabel').textContent = rtt + ' ms';
+        renderScreenConfiguration();
+      }
       break;
     }
 
@@ -634,8 +1052,36 @@ function handleServerMessage(data){
       state.device = data.device || state.device;
       state.capabilities = data.capabilities || state.capabilities;
       state.lastStatus = data;
+      applySessionTelemetry(data);
       renderDashboard();
       renderDeviceInfo();
+      break;
+
+    case 'session_list':
+    case 'session_update':
+      applySessionTelemetry(data);
+      renderPhaseOnePanels();
+      break;
+
+    case 'session_terminated':
+      state.sessionTerminated = true;
+      state.connected = false;
+      state.sessions = state.sessions.filter(session => session.id !== state.clientId);
+      state.connectionQuality = {
+        connectionState: 'disconnected', streamHealth: null, latencyMs: null,
+        lastHeartbeat: state.connectionQuality ? state.connectionQuality.lastHeartbeat : null,
+        activeSessionCount: null
+      };
+      if (state.lastStatus) state.lastStatus.connectedClients = null;
+      stopPing();
+      showPhaseNotice(`This session was ${data.action === 'revoke' ? 'revoked' : 'disconnected'} by the host. Reconnect only when ready.`);
+      updateTopStatus();
+      renderPhaseOnePanels();
+      break;
+
+    case 'emergency_stop':
+    case 'emergency_stop_ack':
+      markSessionsStopped();
       break;
 
     case 'activity':
@@ -643,7 +1089,29 @@ function handleServerMessage(data){
       break;
 
     case 'error':
+      if (state.pendingSessionAction) {
+        state.pendingSessionAction = null;
+        state.sessionActionNotice = data.message || 'Session action failed.';
+        renderPhaseOnePanels();
+      }
+      if (state.emergencyStopPending) {
+        state.emergencyStopPending = false;
+        showPhaseNotice(data.message || 'Emergency stop could not be completed.');
+      }
+      if (state.pendingScreenConfig) {
+        state.pendingScreenConfig = null;
+        renderScreenConfiguration();
+      }
       toast(data.message, true);
+      break;
+
+    case 'screen_configured':
+      state.screenQuality = data.quality;
+      state.screenFps = data.targetFps;
+      state.pendingScreenConfig = null;
+      state.measuredScreenFps = null;
+      state.lastFrameReceivedAt = null;
+      renderScreenConfiguration();
       break;
 
     case 'screen_frame':
@@ -654,50 +1122,84 @@ function handleServerMessage(data){
       $('rdEmpty').innerHTML = 'Screen error: ' + esc(data.message);
       state.screenSubscribed = false;
       $('rdToggleBtn').textContent = 'Start streaming';
+      renderScreenConfiguration();
       break;
 
     case 'upload_started':
       onUploadStarted(data);
       break;
     case 'upload_progress':
-      updateTransfer(data.transferId, { progress: data.progress, status: 'Transferring' });
+      handleUploadProgress(data);
       break;
     case 'upload_error':
       toast('Upload failed: ' + data.message, true);
-      updateTransfer(data.transferId, { status: 'Failed', error: data.message });
+      handleTransferFailure('upload', data);
       break;
 
     case 'transfer_progress':
-      updateTransfer(data.transferId, { progress: data.progress });
+      updateTransfer(data.transferId, transferMetricPatch(data));
       break;
     case 'transfer_completed':
-      updateTransfer(data.transferId, { progress: 100, status: 'Completed' });
-      if (data.direction === 'download') finalizeDownload(data.transferId);
-      handleListFiles();
+      handleTransferCompleted(data);
+      break;
+    case 'transfer_failed':
+      handleTransferFailure(data.direction, data);
       break;
     case 'transfer_cancelled':
-      updateTransfer(data.transferId, { status: 'Cancelled' });
+      handleTransferCancelled(data);
       break;
 
     case 'file_list':
       renderFileList(data);
       break;
 
+    case 'shared_file_list':
+      renderSharedFiles(data);
+      break;
+
     case 'download_started':
-      state.downloadBuffers.set(data.transferId, { chunks: [], fileSize: data.fileSize, filename: data.filename, chunkSize: data.chunkSize, nextIndex: 0 });
-      registerTransfer(data.transferId, data.filename, 'download', data.fileSize);
-      requestNextDownloadChunk(data.transferId);
+      onDownloadStarted(data);
       break;
     case 'download_chunk':
       onDownloadChunk(data);
       break;
     case 'download_error':
       toast('Download failed: ' + data.message, true);
+      handleTransferFailure('download', data);
       break;
 
     case 'file_deleted':
       toast(`Deleted ${data.filename}`);
       handleListFiles();
+      break;
+    
+    case 'clipboard_pull':
+      handleClipboardPull(data.text);
+      break;
+    
+    case 'screenshot_saved':
+      toast(`Screenshot saved: ${data.filename}`);
+      handleListFiles(); // Refresh files list
+      break;
+    
+    case 'recording_saved':
+      toast(`Recording saved: ${data.filename} (${data.frameCount} frames)`);
+      handleListFiles(); // Refresh files list
+      break;
+    
+    case 'audio_data':
+      handleAudioData(data);
+      break;
+    
+    case 'media_info':
+      updateMediaInfo(data);
+      break;
+    
+    case 'pong':
+      if (state.diagnostics.lastLatencyCheck > 0) {
+        state.diagnostics.latencyMs = Date.now() - state.diagnostics.lastLatencyCheck;
+        refreshDiagnostics();
+      }
       break;
   }
 }
@@ -708,21 +1210,45 @@ function updateTopStatus(){
   const pill = $('topStatusPill');
   const text = $('topStatusText');
   pill.classList.remove('connected', 'reconnecting');
-  if (state.connected) {
+  $('emergencyStopButton').hidden = !state.connected || !state.session || state.session.role !== 'host' || state.emergencyStopped;
+  if (state.emergencyStopped) {
+    text.textContent = 'Sessions stopped';
+  } else if (state.sessionTerminated) {
+    text.textContent = 'Session ended';
+  } else if (state.connected) {
     pill.classList.add('connected');
     text.textContent = state.device.hostname ? `Connected — ${state.device.hostname}` : 'Connected';
   } else if (state.reconnecting) {
     pill.classList.add('reconnecting');
-    text.textContent = 'Reconnecting…';
+    const attempt = state.reconnectAttempts;
+    const maxAttempts = 8;
+    text.textContent = `Reconnecting (${attempt}/${maxAttempts})`;
   } else {
     text.textContent = 'Disconnected';
     $('latencyLabel').textContent = '';
+  }
+  
+  // Update reconnect notice if reconnecting
+  const reconnectNotice = $('reconnectNotice');
+  if (reconnectNotice) {
+    if (state.reconnecting && state.reconnectAttempts > 0) {
+      const delay = Math.min(1000 * state.reconnectAttempts, 8000);
+      reconnectNotice.textContent = `Connection lost. Retrying in ${Math.ceil(delay / 1000)}s...`;
+      reconnectNotice.hidden = false;
+    } else {
+      reconnectNotice.hidden = true;
+    }
   }
 }
 
 function startPing(){
   stopPing();
-  state.pingInterval = setInterval(() => send({ type: 'ping', t: Date.now() }), 4000);
+  state.sessionRefreshTicks = 0;
+  state.pingInterval = setInterval(() => {
+    send({ type: 'ping', t: Date.now(), rttMs: state.latencyMs });
+    state.sessionRefreshTicks += 1;
+    if (state.sessionRefreshTicks % 3 === 0) send({ type: 'session_list' });
+  }, 4000);
 }
 function stopPing(){
   if (state.pingInterval) clearInterval(state.pingInterval);
@@ -804,14 +1330,6 @@ function renderDashboard(){
     kv('LAN address', d.lanAddress),
   ].join('');
 
-  const uptime = state.lastStatus ? state.lastStatus.uptimeSeconds : null;
-  $('dashConnection').innerHTML = [
-    kv('Status', state.connected ? 'Connected' : 'Disconnected'),
-    kv('Latency', state.latencyMs != null ? state.latencyMs + ' ms' : 'Unavailable'),
-    kv('Server uptime', uptime != null ? uptime + 's' : 'Unavailable'),
-    kv('Connected clients', state.lastStatus ? state.lastStatus.connectedClients : 'Unavailable'),
-  ].join('');
-
   $('dashCapabilities').innerHTML = [
     capRow('Screen', caps.screen, caps.screenUnavailableReason),
     capRow('Mouse', caps.mouse, caps.controlUnavailableReason),
@@ -831,6 +1349,182 @@ function renderDashboard(){
   $('dashActivity').innerHTML = recent.length
     ? recent.map(activityRow).join('')
     : '<div class="status-line">No activity yet.</div>';
+  renderPhaseOnePanels();
+}
+
+function applySessionTelemetry(data){
+  if (Array.isArray(data.sessions)) state.sessions = data.sessions;
+  if (data.connectionQuality && typeof data.connectionQuality === 'object') {
+    state.connectionQuality = data.connectionQuality;
+    if (state.lastStatus && Number.isFinite(data.connectionQuality.activeSessionCount)) {
+      state.lastStatus.connectedClients = data.connectionQuality.activeSessionCount;
+    }
+  }
+  const ownSession = state.sessions.find(session => session.id === state.clientId);
+  if (ownSession && state.session) {
+    state.session = { ...state.session, role: ownSession.role };
+    if (['LOW', 'BALANCED', 'HIGH'].includes(ownSession.screenQuality) && Number.isInteger(ownSession.targetFps)) {
+      state.screenQuality = ownSession.screenQuality;
+      state.screenFps = ownSession.targetFps;
+    }
+  }
+  if (state.pendingSessionAction && !state.sessions.some(session => session.id === state.pendingSessionAction.sessionId)) {
+    const action = state.pendingSessionAction.action;
+    state.sessionActionNotice = `Session ${action} completed.`;
+    state.pendingSessionAction = null;
+  }
+  updateTopStatus();
+  renderScreenConfiguration();
+}
+
+function renderPhaseOnePanels(){
+  const quality = state.connectionQuality || {};
+  const connectionState = state.emergencyStopped ? 'Disconnected (stopped)'
+    : state.sessionTerminated ? 'Session ended'
+    : state.reconnecting ? 'Reconnecting'
+    : state.connected ? quality.connectionState || 'Connected' : 'Disconnected';
+  const lastHeartbeat = Number.isFinite(quality.lastHeartbeat)
+    ? fmtTime(quality.lastHeartbeat)
+    : null;
+  $('dashConnection').innerHTML = [
+    kv('Connection state', connectionState),
+    kv('Latency', Number.isFinite(quality.latencyMs) ? quality.latencyMs + ' ms' : 'Unavailable'),
+    kv('Stream health', quality.streamHealth),
+    kv('Last heartbeat', lastHeartbeat),
+    kv('Active sessions', Number.isFinite(quality.activeSessionCount) ? quality.activeSessionCount : null),
+    kv('Server uptime', state.lastStatus ? state.lastStatus.uptimeSeconds + 's' : null),
+    kv('Connected clients', state.lastStatus ? state.lastStatus.connectedClients : null),
+  ].join('');
+
+  const hostAuthorized = state.connected && state.session && state.session.role === 'host' && !state.emergencyStopped;
+  $('emergencyStopButton').hidden = !hostAuthorized;
+  $('sessionActionNotice').textContent = state.sessionActionNotice ||
+    (state.pendingSessionAction ? `${state.pendingSessionAction.action === 'revoke' ? 'Revoking' : 'Disconnecting'} session…` : '');
+  const sessions = state.sessions.filter(session => session && typeof session.id === 'string');
+  renderSessionRows(sessions, hostAuthorized);
+}
+
+function renderSessionRows(sessions, hostAuthorized){
+  const signature = JSON.stringify({
+    hostAuthorized,
+    pending: state.pendingSessionAction,
+    sessions: sessions.map(session => [session.id, session.role, session.connectionState, session.connectedAt, session.isActive])
+  });
+  if (signature === state.sessionRenderSignature) {
+    for (const row of $('dashSessions').querySelectorAll('.phase-session')) {
+      const session = sessions.find(item => item.id === row.dataset.sessionId);
+      if (!session) continue;
+      const duration = Number.isFinite(session.connectedAt) ? elapsedLabel(session.connectedAt) : null;
+      const activity = Number.isFinite(session.lastActivity) ? elapsedLabel(session.lastActivity) : null;
+      row.querySelector('.phase-session-duration').textContent = duration ? `Connected ${duration} ago` : 'Duration unavailable';
+      row.querySelector('.phase-session-activity').textContent = activity
+        ? (Date.now() - session.lastActivity < 15000 ? 'Active now' : `Idle ${activity} ago`)
+        : 'Activity unavailable';
+    }
+    return;
+  }
+
+  state.sessionRenderSignature = signature;
+  $('dashSessions').innerHTML = sessions.length ? sessions.map(session => {
+    const isCurrent = session.id === state.clientId;
+    const stateName = typeof session.connectionState === 'string' ? session.connectionState : 'Unavailable';
+    const stateClass = stateName === 'connected' ? 'ok' : stateName === 'stale' ? 'warn' : 'bad';
+    const duration = Number.isFinite(session.connectedAt) ? elapsedLabel(session.connectedAt) : null;
+    const activity = Number.isFinite(session.lastActivity) ? elapsedLabel(session.lastActivity) : null;
+    const activityText = activity
+      ? (Date.now() - session.lastActivity < 15000 ? 'Active now' : `Idle ${activity} ago`)
+      : 'Activity unavailable';
+    const controls = hostAuthorized && !isCurrent ? `
+      <div class="phase-session-actions">
+        <button class="btn btn-ghost" type="button" onclick="Dexile.manageSession('${esc(session.id)}','disconnect')" ${state.pendingSessionAction ? 'disabled' : ''}>Disconnect</button>
+        <button class="btn btn-danger" type="button" onclick="Dexile.manageSession('${esc(session.id)}','revoke')" ${state.pendingSessionAction ? 'disabled' : ''}>Revoke</button>
+      </div>` : `<span class="phase-session-meta">${isCurrent ? 'Current session' : 'Host controls unavailable'}</span>`;
+    return `<div class="phase-session" data-session-id="${esc(session.id)}">
+      <div class="phase-session-info">
+        <div class="phase-session-id">Session ${esc(session.id.slice(0, 8))}${isCurrent ? ' · This device' : ''}</div>
+        <div class="phase-session-meta">
+          <span class="badge ${stateClass}">${esc(stateName)}</span>
+          <span class="phase-session-duration">${duration ? `Connected ${esc(duration)} ago` : 'Duration unavailable'}</span>
+          <span class="phase-session-activity">${esc(activityText)}</span>
+        </div>
+      </div>
+      ${controls}
+    </div>`;
+  }).join('') : '<div class="status-line">No active sessions.</div>';
+  renderScreenConfiguration();
+}
+
+function elapsedLabel(timestamp){
+  if (!Number.isFinite(timestamp)) return null;
+  let seconds = Math.max(0, Math.floor((Date.now() - timestamp) / 1000));
+  if (seconds < 60) return `${seconds}s`;
+  const minutes = Math.floor(seconds / 60);
+  if (minutes < 60) return `${minutes}m`;
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `${hours}h ${minutes % 60}m`;
+  return `${Math.floor(hours / 24)}d ${hours % 24}h`;
+}
+
+function refreshSessions(){
+  if (state.connected) send({ type: 'session_list' });
+}
+
+function manageSession(sessionId, action){
+  if (!state.connected || !state.session || state.session.role !== 'host') return;
+  if (!['disconnect', 'revoke'].includes(action) || sessionId === state.clientId) return;
+  state.pendingSessionAction = { sessionId, action };
+  state.sessionActionNotice = '';
+  renderPhaseOnePanels();
+  send({ type: 'session_manage', sessionId, action });
+}
+
+function openEmergencyConfirmation(){
+  if (!state.connected || !state.session || state.session.role !== 'host' || state.emergencyStopPending) return;
+  $('emergencyDialog').showModal();
+}
+
+function closeEmergencyConfirmation(){
+  $('emergencyDialog').close();
+}
+
+function confirmEmergencyStop(){
+  closeEmergencyConfirmation();
+  if (!state.connected || !state.session || state.session.role !== 'host' || !state.ws || state.ws.readyState !== WebSocket.OPEN) {
+    showPhaseNotice('Emergency stop was not sent because the host connection is unavailable.');
+    return;
+  }
+  state.emergencyStopPending = true;
+  showPhaseNotice('Emergency stop requested…');
+  send({ type: 'emergency_stop', confirm: true });
+}
+
+function markSessionsStopped(){
+  if ($('emergencyDialog').open) $('emergencyDialog').close();
+  state.emergencyStopped = true;
+  state.sessionTerminated = false;
+  state.emergencyStopPending = false;
+  state.connected = false;
+  state.reconnecting = false;
+  state.sessions = [];
+  handleTransferConnectionLost();
+  state.connectionQuality = {
+    connectionState: 'disconnected', streamHealth: 'idle', latencyMs: null,
+    lastHeartbeat: null, activeSessionCount: 0
+  };
+  if (state.lastStatus) state.lastStatus.connectedClients = 0;
+  stopPing();
+  showPhaseNotice('Emergency stop complete. All active remote sessions were stopped; the server remains running.');
+  updateTopStatus();
+  renderPhaseOnePanels();
+}
+
+function showPhaseNotice(message){
+  $('phaseNoticeText').textContent = message;
+  $('phaseNotice').hidden = false;
+}
+
+function returnToConnect(){
+  disconnect();
 }
 
 function kv(k, v){
@@ -867,14 +1561,116 @@ function renderActivityFull(){
   $('activityFull').innerHTML = list.length ? list.map(activityRow).join('') : '<div class="status-line">No activity yet.</div>';
 }
 
+// --------------------------------------------------------------- diagnostics
+
+function refreshDiagnostics(){
+  // Update latency
+  const latencyEl = $('diagLatency');
+  if (latencyEl) {
+    if (state.diagnostics.latencyMs !== null) {
+      latencyEl.textContent = `${state.diagnostics.latencyMs}ms`;
+    } else {
+      latencyEl.textContent = '--';
+    }
+  }
+  
+  // Update FPS
+  const fpsEl = $('diagFPS');
+  if (fpsEl) {
+    fpsEl.textContent = state.frameCount > 0 ? `${Math.round(state.fps)} fps` : '--';
+  }
+  
+  // Update uptime
+  const uptimeEl = $('diagUptime');
+  if (uptimeEl && state.diagnostics.sessionStart) {
+    const uptime = Date.now() - state.diagnostics.sessionStart;
+    const hours = Math.floor(uptime / 3600000);
+    const minutes = Math.floor((uptime % 3600000) / 60000);
+    const seconds = Math.floor((uptime % 60000) / 1000);
+    uptimeEl.textContent = `${hours}h ${minutes}m ${seconds}s`;
+  }
+  
+  // Update message counts
+  const sentEl = $('diagMessagesSent');
+  if (sentEl) sentEl.textContent = state.diagnostics.messagesSent;
+  
+  const receivedEl = $('diagMessagesReceived');
+  if (receivedEl) receivedEl.textContent = state.diagnostics.messagesReceived;
+  
+  const errorsEl = $('diagErrors');
+  if (errorsEl) errorsEl.textContent = state.diagnostics.errors;
+}
+
+function exportDiagnostics(){
+  const data = {
+    timestamp: new Date().toISOString(),
+    session: {
+      uptime: state.diagnostics.sessionStart ? Date.now() - state.diagnostics.sessionStart : 0,
+      connected: state.connected,
+      authenticated: state.authenticated
+    },
+    performance: {
+      latency: state.diagnostics.latencyMs,
+      fps: Math.round(state.fps),
+      frameCount: state.frameCount
+    },
+    messages: {
+      sent: state.diagnostics.messagesSent,
+      received: state.diagnostics.messagesReceived,
+      errors: state.diagnostics.errors
+    },
+    capabilities: state.capabilities || {},
+    activity: state.activity.slice(-50), // Last 50 activities
+    transfers: {
+      total: state.transfers.length,
+      completed: state.transfers.filter(t => t.status === 'completed').length,
+      failed: state.transfers.filter(t => t.status === 'error').length
+    }
+  };
+  
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `dexile-diagnostics-${Date.now()}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  
+  toast('Diagnostics exported');
+}
+
+function trackMessageSent(){
+  state.diagnostics.messagesSent++;
+}
+
+function trackMessageReceived(){
+  state.diagnostics.messagesReceived++;
+}
+
+function trackError(){
+  state.diagnostics.errors++;
+}
+
+function checkLatency(){
+  if (!state.connected || !state.ws) return;
+  
+  const startTime = Date.now();
+  state.diagnostics.lastLatencyCheck = startTime;
+  
+  send({ type: 'ping' });
+}
+
 // -------------------------------------------------------------- remote desktop
 
 function toggleScreenSubscribe(forceOff){
   if (forceOff || state.screenSubscribed) {
     send({ type: 'screen_unsubscribe' });
     state.screenSubscribed = false;
+    state.measuredScreenFps = null;
+    state.lastFrameReceivedAt = null;
     $('rdToggleBtn').textContent = 'Start streaming';
     $('remoteSub').textContent = 'Not subscribed.';
+    renderScreenConfiguration();
     return;
   }
   if (!state.capabilities.screen) {
@@ -885,9 +1681,12 @@ function toggleScreenSubscribe(forceOff){
   $('rdEmpty').innerHTML = '<div class="spinner"></div><div style="margin-top:8px;">Waiting for first frame…</div>';
   send({ type: 'screen_subscribe', fps: state.screenFps });
   state.screenSubscribed = true;
+  state.measuredScreenFps = null;
+  state.lastFrameReceivedAt = null;
   state.screenWasSubscribed = true;
   $('rdToggleBtn').textContent = 'Stop streaming';
   $('remoteSub').textContent = 'Streaming…';
+  renderScreenConfiguration();
 }
 
 function renderScreenFrame(data){
@@ -900,8 +1699,18 @@ function renderScreenFrame(data){
     stage.appendChild(img);
   }
   img.src = 'data:image/jpeg;base64,' + data.data;
-  $('rdStats').textContent = `${data.fps ? data.fps.toFixed(1) : '—'} fps · capture ${data.captureMs}ms`;
+  
+  // Apply current zoom/pan/rotation
+  applyScreenTransform();
+  
+  const receivedAt = performance.now();
+  if (state.lastFrameReceivedAt !== null && receivedAt > state.lastFrameReceivedAt) {
+    state.measuredScreenFps = 1000 / (receivedAt - state.lastFrameReceivedAt);
+  }
+  state.lastFrameReceivedAt = receivedAt;
+  $('rdStats').textContent = `${Number.isFinite(state.measuredScreenFps) ? `Measured ${state.measuredScreenFps.toFixed(1)} fps` : 'Measured FPS: N/A'} · target ${state.screenFps} fps · capture ${data.captureMs}ms`;
   $('remoteSub').textContent = `Streaming — frame #${data.seq}`;
+  renderScreenConfiguration();
 }
 
 function setFitMode(mode){
@@ -911,6 +1720,310 @@ function setFitMode(mode){
   stage.classList.toggle('actual', mode === 'actual');
   $('fitBtn').classList.toggle('active', mode === 'fit');
   $('actualBtn').classList.toggle('active', mode === 'actual');
+  if (mode === 'fit') {
+    // Reset zoom when switching to fit mode
+    state.screenZoom = 100;
+    state.screenPanX = 0;
+    state.screenPanY = 0;
+    applyScreenTransform();
+  }
+}
+
+// ---------------------------------------------------------------- screen zoom/pan/rotate
+
+const ZOOM_LEVELS = [50, 75, 100, 125, 150, 175, 200, 250, 300];
+
+function zoomScreen(action){
+  if (action === 'reset') {
+    state.screenZoom = 100;
+    state.screenPanX = 0;
+    state.screenPanY = 0;
+  } else if (action === 'in') {
+    const currentIndex = ZOOM_LEVELS.findIndex(z => z >= state.screenZoom);
+    const nextIndex = currentIndex < ZOOM_LEVELS.length - 1 ? currentIndex + 1 : ZOOM_LEVELS.length - 1;
+    state.screenZoom = ZOOM_LEVELS[nextIndex];
+  } else if (action === 'out') {
+    const currentIndex = ZOOM_LEVELS.findIndex(z => z >= state.screenZoom);
+    const prevIndex = currentIndex > 0 ? currentIndex - 1 : 0;
+    state.screenZoom = ZOOM_LEVELS[prevIndex];
+  }
+  
+  // Update zoom display
+  $('zoomLevel').textContent = state.screenZoom + '%';
+  
+  // Update stage cursor for panning
+  const stage = $('rdStage');
+  if (state.screenZoom > 100) {
+    stage.classList.add('panning');
+  } else {
+    stage.classList.remove('panning');
+    state.screenPanX = 0;
+    state.screenPanY = 0;
+  }
+  
+  applyScreenTransform();
+}
+
+function rotateScreen(){
+  state.screenRotation = (state.screenRotation + 90) % 360;
+  applyScreenTransform();
+}
+
+function applyScreenTransform(){
+  const img = document.getElementById('rdImg');
+  if (!img) return;
+  
+  const zoom = state.screenZoom / 100;
+  const rotation = state.screenRotation;
+  const panX = state.screenPanX;
+  const panY = state.screenPanY;
+  
+  img.style.transform = `translate(${panX}px, ${panY}px) scale(${zoom}) rotate(${rotation}deg)`;
+}
+
+function initScreenPanning(){
+  const stage = $('rdStage');
+  let isDragging = false;
+  let dragStartX = 0;
+  let dragStartY = 0;
+  let panStartX = 0;
+  let panStartY = 0;
+  
+  stage.addEventListener('mousedown', (e) => {
+    if (state.screenZoom <= 100 || !document.getElementById('rdImg')) return;
+    if (e.button !== 0) return; // Only left mouse button
+    
+    isDragging = true;
+    dragStartX = e.clientX;
+    dragStartY = e.clientY;
+    panStartX = state.screenPanX;
+    panStartY = state.screenPanY;
+    e.preventDefault();
+  });
+  
+  stage.addEventListener('mousemove', (e) => {
+    if (!isDragging) return;
+    
+    const deltaX = e.clientX - dragStartX;
+    const deltaY = e.clientY - dragStartY;
+    
+    state.screenPanX = panStartX + deltaX;
+    state.screenPanY = panStartY + deltaY;
+    
+    applyScreenTransform();
+    e.preventDefault();
+  });
+  
+  stage.addEventListener('mouseup', () => {
+    isDragging = false;
+  });
+  
+  stage.addEventListener('mouseleave', () => {
+    isDragging = false;
+  });
+  
+  // Touch support for mobile panning
+  let touchStartX = 0;
+  let touchStartY = 0;
+  let touchPanStartX = 0;
+  let touchPanStartY = 0;
+  let isTouchPanning = false;
+  
+  stage.addEventListener('touchstart', (e) => {
+    if (state.screenZoom <= 100 || !document.getElementById('rdImg')) return;
+    if (e.touches.length !== 1) return;
+    
+    isTouchPanning = true;
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+    touchPanStartX = state.screenPanX;
+    touchPanStartY = state.screenPanY;
+  }, { passive: false });
+  
+  stage.addEventListener('touchmove', (e) => {
+    if (!isTouchPanning || e.touches.length !== 1) return;
+    
+    const deltaX = e.touches[0].clientX - touchStartX;
+    const deltaY = e.touches[0].clientY - touchStartY;
+    
+    state.screenPanX = touchPanStartX + deltaX;
+    state.screenPanY = touchPanStartY + deltaY;
+    
+    applyScreenTransform();
+    e.preventDefault();
+  }, { passive: false });
+  
+  stage.addEventListener('touchend', () => {
+    isTouchPanning = false;
+  });
+}
+
+function toggleRemoteFullscreen(){
+  const stage = $('rdStage');
+  
+  if (!state.remoteFullscreen) {
+    // Enter fullscreen
+    if (stage.requestFullscreen) {
+      stage.requestFullscreen();
+    } else if (stage.webkitRequestFullscreen) {
+      stage.webkitRequestFullscreen();
+    } else if (stage.mozRequestFullScreen) {
+      stage.mozRequestFullScreen();
+    } else if (stage.msRequestFullscreen) {
+      stage.msRequestFullscreen();
+    } else {
+      // Fallback: use CSS-based fullscreen
+      stage.classList.add('fullscreen');
+      state.remoteFullscreen = true;
+    }
+  } else {
+    // Exit fullscreen
+    if (document.exitFullscreen) {
+      document.exitFullscreen();
+    } else if (document.webkitExitFullscreen) {
+      document.webkitExitFullscreen();
+    } else if (document.mozCancelFullScreen) {
+      document.mozCancelFullScreen();
+    } else if (document.msExitFullscreen) {
+      document.msExitFullscreen();
+    } else {
+      // Fallback: remove CSS-based fullscreen
+      stage.classList.remove('fullscreen');
+      state.remoteFullscreen = false;
+    }
+  }
+}
+
+// Listen for fullscreen changes
+document.addEventListener('fullscreenchange', () => {
+  state.remoteFullscreen = !!document.fullscreenElement;
+});
+document.addEventListener('webkitfullscreenchange', () => {
+  state.remoteFullscreen = !!document.webkitFullscreenElement;
+});
+document.addEventListener('mozfullscreenchange', () => {
+  state.remoteFullscreen = !!document.mozFullScreenElement;
+});
+document.addEventListener('msfullscreenchange', () => {
+  state.remoteFullscreen = !!document.msFullscreenElement;
+});
+
+// ---------------------------------------------------------------- screenshot
+
+function captureScreenshot(){
+  if (!state.connected || !state.ws || state.ws.readyState !== WebSocket.OPEN) {
+    toast('Not connected to server', true);
+    return;
+  }
+  
+  const btn = $('screenshotBtn');
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = '📸 Capturing...';
+  }
+  
+  send({ type: 'screenshot_capture' });
+  
+  // Re-enable button after a delay
+  setTimeout(() => {
+    if (btn) {
+      btn.disabled = false;
+      btn.textContent = '📸 Screenshot';
+    }
+  }, 3000);
+}
+
+// ---------------------------------------------------------------- recording
+
+function toggleRecording(){
+  if (!state.connected || !state.ws || state.ws.readyState !== WebSocket.OPEN) {
+    toast('Not connected to server', true);
+    return;
+  }
+  
+  if (state.isRecording) {
+    stopRecording();
+  } else {
+    startRecording();
+  }
+}
+
+function startRecording(){
+  const btn = $('recordBtn');
+  const timeDisplay = $('recordingTime');
+  
+  state.isRecording = true;
+  state.recordingStartTime = Date.now();
+  state.recordingDuration = 0;
+  
+  if (btn) {
+    btn.textContent = '⏹ Stop';
+    btn.classList.add('recording');
+  }
+  
+  if (timeDisplay) {
+    timeDisplay.style.display = 'inline';
+  }
+  
+  // Send start command to server
+  send({ type: 'recording_start' });
+  
+  // Update duration display every second
+  state.recordingUpdateInterval = setInterval(() => {
+    if (!state.isRecording) {
+      clearInterval(state.recordingUpdateInterval);
+      return;
+    }
+    
+    state.recordingDuration = Date.now() - state.recordingStartTime;
+    const seconds = Math.floor(state.recordingDuration / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    
+    if (timeDisplay) {
+      timeDisplay.textContent = `${minutes}:${secs.toString().padStart(2, '0')}`;
+    }
+    
+    // Auto-stop at max duration
+    if (state.recordingDuration >= state.recordingMaxDuration) {
+      stopRecording();
+      toast('Recording stopped: maximum duration reached', true);
+    }
+  }, 1000);
+  
+  toast('Recording started (max 60 seconds)');
+}
+
+function stopRecording(){
+  const btn = $('recordBtn');
+  const timeDisplay = $('recordingTime');
+  
+  state.isRecording = false;
+  
+  if (state.recordingUpdateInterval) {
+    clearInterval(state.recordingUpdateInterval);
+    state.recordingUpdateInterval = null;
+  }
+  
+  if (btn) {
+    btn.textContent = '⏺ Record';
+    btn.classList.remove('recording');
+    btn.disabled = true;
+  }
+  
+  if (timeDisplay) {
+    timeDisplay.style.display = 'none';
+  }
+  
+  // Send stop command to server
+  send({ type: 'recording_stop' });
+  
+  // Re-enable button after processing
+  setTimeout(() => {
+    if (btn) btn.disabled = false;
+  }, 2000);
+  
+  toast('Recording stopped, processing...');
 }
 
 // -------------------------------------------------------------------- mouse
@@ -1024,17 +2137,97 @@ function toggleModifier(btn, mod){
 
 function initKeyboardInput(){
   const el = $('kbdInput');
-  el.addEventListener('keydown', (e) => {
-    if (!state.capabilities.keyboard) { toast('Keyboard control is unavailable on this server.', true); e.preventDefault(); return; }
-    if (['Control','Alt','Shift','Meta'].includes(e.key)) return;
-    e.preventDefault();
-    send({
-      type: 'keyboard', key: e.key,
+  const specialKeys = new Set([
+    'Backspace', 'Enter', 'Tab', 'Escape', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight',
+    'Delete', 'Home', 'End', 'PageUp', 'PageDown',
+    'F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8', 'F9', 'F10', 'F11', 'F12'
+  ]);
+  let previousValue = el.value;
+  let composing = false;
+  let compositionStartValue = '';
+  let ignoredCompositionText = null;
+
+  function insertedText(before, after){
+    let prefix = 0;
+    while (prefix < before.length && prefix < after.length && before[prefix] === after[prefix]) prefix++;
+    let suffix = 0;
+    while (suffix < before.length - prefix && suffix < after.length - prefix &&
+      before[before.length - suffix - 1] === after[after.length - suffix - 1]) suffix++;
+    return after.slice(prefix, after.length - suffix);
+  }
+
+  function sendText(text){
+    if (!text || !state.capabilities.keyboard) return;
+    const characters = Array.from(text);
+    for (let index = 0; index < characters.length; index += 1024) {
+      send({ type: 'keyboard', text: characters.slice(index, index + 1024).join('') });
+    }
+  }
+
+  function modifierPayload(e){
+    return {
       ctrlKey: e.ctrlKey || state.modifiers.ctrlKey,
       altKey: e.altKey || state.modifiers.altKey,
       shiftKey: e.shiftKey || state.modifiers.shiftKey,
       metaKey: e.metaKey
-    });
+    };
+  }
+
+  el.addEventListener('keydown', (e) => {
+    if (!state.capabilities.keyboard) { toast('Keyboard control is unavailable on this server.', true); e.preventDefault(); return; }
+    if (composing || e.isComposing || ['Control','Alt','Shift','Meta'].includes(e.key)) return;
+
+    ignoredCompositionText = null;
+    if (['Unidentified', 'Dead', 'Process'].includes(e.key)) return;
+
+    const altGraph = typeof e.getModifierState === 'function' && e.getModifierState('AltGraph');
+    const hasShortcutModifier = e.ctrlKey || e.metaKey || state.modifiers.ctrlKey || state.modifiers.altKey ||
+      ((e.altKey || state.modifiers.altKey) && !altGraph);
+    if (specialKeys.has(e.key) || hasShortcutModifier || e.key.length !== 1) {
+      e.preventDefault();
+      previousValue = el.value;
+      send({ type: 'keyboard', key: e.key, ...modifierPayload(e) });
+    }
+  });
+
+  el.addEventListener('input', (e) => {
+    const value = el.value;
+    if (composing || e.isComposing) {
+      previousValue = value;
+      return;
+    }
+
+    const text = insertedText(previousValue, value);
+    previousValue = value;
+    if (!text) return;
+    if (ignoredCompositionText && (text === ignoredCompositionText || /Composition/i.test(e.inputType || ''))) {
+      ignoredCompositionText = null;
+      return;
+    }
+    ignoredCompositionText = null;
+    if (!state.capabilities.keyboard) {
+      toast('Keyboard control is unavailable on this server.', true);
+      return;
+    }
+    sendText(text);
+  });
+
+  el.addEventListener('compositionstart', () => {
+    composing = true;
+    compositionStartValue = el.value;
+    previousValue = el.value;
+  });
+
+  el.addEventListener('compositionend', (e) => {
+    composing = false;
+    const value = el.value;
+    const text = insertedText(compositionStartValue, value) || e.data || '';
+    previousValue = value;
+    compositionStartValue = '';
+    if (text && state.capabilities.keyboard) {
+      sendText(text);
+      ignoredCompositionText = text;
+    }
   });
 }
 
@@ -1062,22 +2255,66 @@ function handleFiles(fileList){
 
 const pendingUploads = new Map(); // transferId -> {file, chunkSize, nextIndex}
 
-async function uploadFile(file){
-  send({ type: 'upload_start', filename: file.name, fileSize: file.size });
-  pendingUploads.set('__pending_' + file.name + file.size, { file });
+function uploadFile(file){
+  if (!state.connected) {
+    toast('Connect to the server before uploading.', true);
+    return;
+  }
+  if (state.uploadQueue.length >= 100) {
+    toast('Upload queue is full. Wait for queued files to start.', true);
+    return;
+  }
+  const queuedId = `queued-upload-${++state.transferSequence}`;
+  if (!registerTransfer(queuedId, file.name, 'upload', file.size)) return;
+  state.transfers.get(queuedId).file = file;
+  state.uploadQueue.push(queuedId);
+  pumpUploadQueue();
 }
 
 function onUploadStarted(data){
-  // Match by scanning pending placeholder entries (single-flight assumption is fine for this UI).
-  const key = [...pendingUploads.keys()].find(k => k.startsWith('__pending_'));
-  if (!key) return;
-  const entry = pendingUploads.get(key);
-  pendingUploads.delete(key);
-  entry.chunkSize = data.chunkSize;
-  entry.nextIndex = 0;
-  pendingUploads.set(data.transferId, entry);
-  registerTransfer(data.transferId, entry.file.name, 'upload', entry.file.size);
-  sendNextUploadChunk(data.transferId);
+  const queuedId = state.pendingUploadStart;
+  state.pendingUploadStart = null;
+  const transfer = queuedId ? state.transfers.get(queuedId) : null;
+  if (!transfer) {
+    send({ type: 'upload_cancel', transferId: data.transferId });
+    pumpUploadQueue();
+    return;
+  }
+
+  state.transfers.delete(queuedId);
+  Object.assign(transfer, {
+    id: data.transferId,
+    filename: data.filename || transfer.filename,
+    totalBytes: data.totalBytes ?? transfer.size,
+    startedAt: data.startedAt ? Date.parse(data.startedAt) : Date.now(),
+    bytesTransferred: 0,
+    progress: 0,
+    status: transfer.cancelRequested ? 'Cancelling' : 'Transferring'
+  });
+  state.transfers.set(data.transferId, transfer);
+
+  if (transfer.cancelRequested) {
+    send({ type: 'upload_cancel', transferId: data.transferId });
+  } else {
+    pendingUploads.set(data.transferId, { file: transfer.file, chunkSize: data.chunkSize, nextIndex: 0, awaitingAck: false });
+    sendNextUploadChunk(data.transferId);
+  }
+  renderTransfers();
+  pumpUploadQueue();
+}
+
+function pumpUploadQueue(){
+  if (!state.connected || state.pendingUploadStart) return;
+  while (state.uploadQueue.length) {
+    const queuedId = state.uploadQueue.shift();
+    const transfer = state.transfers.get(queuedId);
+    if (!transfer || transfer.status !== 'Queued') continue;
+    state.pendingUploadStart = queuedId;
+    transfer.status = 'Starting';
+    renderTransfers();
+    send({ type: 'upload_start', filename: transfer.filename, fileSize: transfer.size });
+    return;
+  }
 }
 
 async function sendNextUploadChunk(transferId){
@@ -1085,6 +2322,11 @@ async function sendNextUploadChunk(transferId){
   if (!entry) return;
   const { file, chunkSize, nextIndex } = entry;
   const start = nextIndex * chunkSize;
+  if (file.size === 0 && nextIndex === 0) {
+    send({ type: 'upload_chunk', transferId, chunkIndex: 0, data: '', isLastChunk: true });
+    pendingUploads.delete(transferId);
+    return;
+  }
   if (start >= file.size) return;
   const slice = file.slice(start, start + chunkSize);
   const buf = await slice.arrayBuffer();
@@ -1111,22 +2353,243 @@ function arrayBufferToBase64(buffer){
 }
 
 function handleListFiles(){
-  if (state.connected) send({ type: 'list_files' });
+  if (!state.connected) return;
+  state.filesLoading = true;
+  state.filesError = null;
+  renderSharedFilesList();
+  send({ type: 'list_shared_files' });
 }
 
+// Legacy renderFileList kept for backward compatibility - it's never called now
+// but might be referenced elsewhere
 function renderFileList(data){
-  const list = data.outgoing || [];
-  $('outgoingList').innerHTML = list.length ? list.map(f => `
-    <div class="file-row">
-      <span class="name">${esc(f.filename)}</span>
-      <span class="meta">${esc(f.formattedSize)}</span>
-      <button class="btn btn-ghost" style="padding:6px 10px;" onclick="Dexile.downloadFile('${esc(f.filename).replace(/'/g,"\\'")}')">Download</button>
-      <button class="btn btn-ghost" style="padding:6px 10px;" onclick="Dexile.deleteFile('${esc(f.filename).replace(/'/g,"\\'")}','outgoing')">Delete</button>
-    </div>`).join('') : '<div class="status-line">No files placed for download on the desktop yet.</div>';
+  // This legacy function is replaced by renderSharedFiles
+  // Keeping it empty to avoid errors if anything still references it
 }
 
+// -------------------------------------------------------------- shared files
+// Everything below renders the unified Shared Files list (both "From Laptop"
+// and "From Phone" locations) with client-side search/filter/sort, reusing
+// the existing chunked download protocol and completed-download Blob cache.
+// No second file-transfer protocol and no second cache are introduced here.
+
+function fileCategory(file){
+  const type = String((file && file.type) || '');
+  if (type.startsWith('image/')) return 'image';
+  if (type.startsWith('video/')) return 'video';
+  if (type.startsWith('audio/')) return 'audio';
+  if (
+    type === 'application/pdf' || type === 'text/plain' || type === 'text/markdown' ||
+    type === 'text/csv' || type === 'application/json' || type === 'application/xml' ||
+    type.includes('word') || type.includes('presentation') || type.includes('spreadsheet')
+  ) return 'document';
+  return 'other';
+}
+
+function fileIcon(category){
+  return { image: '🖼', video: '🎬', audio: '🎵', document: '📄', other: '📦' }[category] || '📄';
+}
+
+function fileBusyKey(location, filename){
+  return `${location}::${filename}`;
+}
+
+function markFileBusy(location, filename, busy){
+  const key = fileBusyKey(location, filename);
+  if (busy) state.filesBusy.add(key); else state.filesBusy.delete(key);
+  renderSharedFilesList();
+}
+
+// A download/preview/delete error only ever comes back with a bare filename,
+// so clear busy state for that name under either location rather than
+// requiring the error path to also thread the location through.
+function clearFileBusyByFilename(filename){
+  let changed = false;
+  for (const key of [...state.filesBusy]) {
+    if (key.endsWith(`::${filename}`)) { state.filesBusy.delete(key); changed = true; }
+  }
+  if (changed) renderSharedFilesList();
+}
+
+function filterSortSharedFiles(files){
+  let list = files.slice();
+  const q = state.filesSearch.trim().toLowerCase();
+  if (q) list = list.filter((f) => f.name.toLowerCase().includes(q));
+  if (state.filesFilter !== 'all') list = list.filter((f) => fileCategory(f) === state.filesFilter);
+  const sort = state.filesSort;
+  list.sort((a, b) => {
+    if (sort === 'name') return a.name.localeCompare(b.name);
+    if (sort === 'size') return b.size - a.size;
+    const at = Date.parse(a.modifiedAt) || 0;
+    const bt = Date.parse(b.modifiedAt) || 0;
+    return sort === 'oldest' ? at - bt : bt - at;
+  });
+  return list;
+}
+
+function renderSharedFiles(data){
+  state.sharedFiles = Array.isArray(data.shared) ? data.shared : [];
+  state.filesLoading = false;
+  state.filesError = null;
+  renderSharedFilesList();
+}
+
+function renderSharedFilesList(){
+  const container = $('sharedFilesList');
+  if (!container) return;
+  if (state.filesLoading) { container.innerHTML = '<div class="status-line">Loading…</div>'; return; }
+  if (state.filesError) { container.innerHTML = `<div class="status-line err">${esc(state.filesError)}</div>`; return; }
+  const all = state.sharedFiles;
+  if (!all.length) {
+    container.innerHTML = '<div class="status-line">No shared files yet. Upload from this device, or place a file in the desktop\'s outgoing folder.</div>';
+    return;
+  }
+  const list = filterSortSharedFiles(all);
+  if (!list.length) { container.innerHTML = '<div class="status-line">No files match your search or filter.</div>'; return; }
+  container.innerHTML = list.map(renderSharedFileRow).join('');
+}
+
+function renderSharedFileRow(f){
+  const busy = state.filesBusy.has(fileBusyKey(f.location, f.name));
+  const nameJs = esc(f.name).replace(/'/g, "\\'");
+  const locJs = esc(f.location).replace(/'/g, "\\'");
+  const dis = busy ? 'disabled' : '';
+  const viewBtn = f.previewable
+    ? `<button class="btn btn-ghost" type="button" onclick="Dexile.previewSharedFile('${nameJs}','${locJs}')" ${dis}>View</button>`
+    : '';
+  return `
+    <div class="file-row">
+      <span class="icon">${fileIcon(fileCategory(f))}</span>
+      <span class="name" title="${esc(f.name)}">${esc(shortenFilename(f.name))}</span>
+      <span class="meta">${esc(f.formattedSize)} · ${esc(f.locationLabel)}</span>
+      <div class="file-row-actions">
+        ${viewBtn}
+        <button class="btn btn-ghost" type="button" onclick="Dexile.downloadSharedFile('${nameJs}','${locJs}')" ${dis}>${busy ? 'Working…' : 'Download'}</button>
+        <button class="btn btn-ghost" type="button" onclick="Dexile.requestDeleteSharedFile('${nameJs}','${locJs}')" ${dis}>Delete</button>
+      </div>
+    </div>`;
+}
+
+function setFilesSearch(value){
+  state.filesSearch = String(value || '');
+  renderSharedFilesList();
+}
+
+function setFilesFilter(filter){
+  state.filesFilter = filter;
+  document.querySelectorAll('#filesFilterChips .file-chip').forEach((chip) => {
+    chip.classList.toggle('active', chip.dataset.filter === filter);
+  });
+  renderSharedFilesList();
+}
+
+function setFilesSort(value){
+  state.filesSort = value;
+  renderSharedFilesList();
+}
+
+function downloadSharedFile(filename, location){
+  startSharedFileTransfer(filename, location, false);
+}
+
+function previewSharedFile(filename, location){
+  startSharedFileTransfer(filename, location, true);
+}
+
+function startSharedFileTransfer(filename, location, preview){
+  if (!state.connected) {
+    toast(`Connect to the server before ${preview ? 'previewing' : 'downloading'}.`, true);
+    return;
+  }
+  markFileBusy(location, filename, true);
+  const queuedId = `queued-download-${++state.transferSequence}`;
+  if (!registerTransfer(queuedId, filename, 'download', null)) {
+    markFileBusy(location, filename, false);
+    return;
+  }
+  const record = state.transfers.get(queuedId);
+  if (record) { record.preview = preview; record.location = location; }
+  updateTransfer(queuedId, { status: 'Starting' });
+  state.pendingDownloadStarts.push(queuedId);
+  send({ type: 'download_start', filename, location, preview });
+}
+
+function requestDeleteSharedFile(filename, location){
+  state.pendingDelete = { filename, location };
+  const message = $('fileDeleteDialogMessage');
+  if (message) message.textContent = `Delete "${filename}"? This cannot be undone.`;
+  const dialog = $('fileDeleteDialog');
+  if (dialog && typeof dialog.showModal === 'function') dialog.showModal();
+}
+
+function cancelDeleteFile(){
+  state.pendingDelete = null;
+  const dialog = $('fileDeleteDialog');
+  if (dialog && dialog.open) dialog.close();
+}
+
+function confirmDeleteFile(){
+  const pending = state.pendingDelete;
+  const dialog = $('fileDeleteDialog');
+  if (dialog && dialog.open) dialog.close();
+  state.pendingDelete = null;
+  if (!pending) return;
+  if (!state.connected) { toast('Connect to the server before deleting.', true); return; }
+  markFileBusy(pending.location, pending.filename, true);
+  send({ type: 'delete_file', filename: pending.filename, location: pending.location, confirm: true });
+}
+
+// Legacy entry point kept for existing callers (retryTransfer) that only ever
+// know a filename: the server falls back to "From Laptop" then "From Phone".
 function downloadFile(filename){
+  if (!state.connected) {
+    toast('Connect to the server before downloading.', true);
+    return;
+  }
+  const queuedId = `queued-download-${++state.transferSequence}`;
+  if (!registerTransfer(queuedId, filename, 'download', null)) return;
+  updateTransfer(queuedId, { status: 'Starting' });
+  state.pendingDownloadStarts.push(queuedId);
   send({ type: 'download_start', filename });
+}
+
+function onDownloadStarted(data){
+  const pendingIndex = state.pendingDownloadStarts.findIndex(id => state.transfers.get(id)?.filename === data.filename);
+  const queuedId = pendingIndex >= 0 ? state.pendingDownloadStarts.splice(pendingIndex, 1)[0] : null;
+  const transfer = queuedId ? state.transfers.get(queuedId) : null;
+  if (queuedId) state.transfers.delete(queuedId);
+  const record = transfer || {
+    filename: data.filename,
+    direction: 'download',
+    queuedAt: Date.now(),
+    completedAt: null,
+    error: null
+  };
+  Object.assign(record, {
+    id: data.transferId,
+    filename: data.filename,
+    direction: 'download',
+    size: data.totalBytes ?? data.fileSize,
+    totalBytes: data.totalBytes ?? data.fileSize,
+    bytesTransferred: 0,
+    progress: 0,
+    speedBps: 0,
+    etaSeconds: null,
+    startedAt: data.startedAt ? Date.parse(data.startedAt) : Date.now(),
+    status: record.cancelRequested ? 'Cancelling' : 'Downloading'
+  });
+  state.transfers.set(data.transferId, record);
+  if (record.cancelRequested) {
+    send({ type: 'download_cancel', transferId: data.transferId });
+    renderTransfers();
+    return;
+  }
+  state.downloadBuffers.set(data.transferId, {
+    chunks: [], fileSize: data.fileSize, filename: data.filename,
+    chunkSize: data.chunkSize, nextIndex: 0, lastChunkReceived: false, transferCompleted: false
+  });
+  renderTransfers();
+  requestNextDownloadChunk(data.transferId);
 }
 
 function requestNextDownloadChunk(transferId){
@@ -1140,9 +2603,13 @@ function onDownloadChunk(data){
   if (!buf) return;
   buf.chunks[data.chunkIndex] = data.data;
   buf.nextIndex = data.chunkIndex + 1;
-  if (!data.isLastChunk) {
-    requestNextDownloadChunk(data.transferId);
+  updateTransfer(data.transferId, transferMetricPatch(data));
+  if (data.isLastChunk) {
+    buf.lastChunkReceived = true;
+    if (buf.transferCompleted) finalizeDownload(data.transferId);
+    return;
   }
+  requestNextDownloadChunk(data.transferId);
 }
 
 function finalizeDownload(transferId){
@@ -1154,30 +2621,352 @@ function finalizeDownload(transferId){
     for (let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
     return arr;
   });
-  const blob = new Blob(binaryParts);
+  const blob = new Blob(binaryParts, { type: detectDownloadMimeType(buf.filename) });
+  // The browser saves its own copy, but Dexile keeps this one so a completed
+  // transfer can be reopened without asking the server for the file again.
+  retainDownloadedBlob(transferId, buf.filename, blob);
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url; a.download = buf.filename;
   document.body.appendChild(a); a.click(); a.remove();
-  setTimeout(() => URL.revokeObjectURL(url), 4000);
+  setTimeout(() => URL.revokeObjectURL(url), DOWNLOAD_URL_TTL_MS);
   state.downloadBuffers.delete(transferId);
+  renderTransfers();
 }
 
-function deleteFile(filename, direction){
-  send({ type: 'delete_file', filename, direction });
+// ------------------------------------------------- completed download copies
+// A completed download is only reusable while this page still holds its bytes,
+// so the cache is bounded by both entry count and total size, the oldest entry
+// is evicted first, and every object URL it hands out is revoked on eviction.
+// Nothing is persisted: after a reload there is no local copy and the UI says
+// so rather than pretending the file is still there.
+const DOWNLOAD_CACHE_MAX_ENTRIES = 6;
+const DOWNLOAD_CACHE_MAX_BYTES = 64 * 1024 * 1024;
+const DOWNLOAD_OVERSIZE_TTL_MS = 60 * 1000;
+const DOWNLOAD_URL_TTL_MS = 4000;
+const DOWNLOAD_MIME_TYPES = Object.freeze({
+  pdf: 'application/pdf',
+  png: 'image/png', jpg: 'image/jpeg', jpeg: 'image/jpeg', gif: 'image/gif',
+  webp: 'image/webp', bmp: 'image/bmp', svg: 'image/svg+xml', avif: 'image/avif', heic: 'image/heic',
+  txt: 'text/plain', log: 'text/plain', md: 'text/markdown', csv: 'text/csv',
+  json: 'application/json', xml: 'application/xml', html: 'text/html',
+  css: 'text/css', js: 'text/javascript',
+  mp3: 'audio/mpeg', m4a: 'audio/mp4', wav: 'audio/wav', ogg: 'audio/ogg', flac: 'audio/flac',
+  mp4: 'video/mp4', m4v: 'video/mp4', webm: 'video/webm', mov: 'video/quicktime',
+  avi: 'video/x-msvideo', mkv: 'video/x-matroska',
+  zip: 'application/zip', rar: 'application/vnd.rar', '7z': 'application/x-7z-compressed',
+  tar: 'application/x-tar', gz: 'application/gzip',
+  doc: 'application/msword',
+  docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  xls: 'application/vnd.ms-excel',
+  xlsx: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  ppt: 'application/vnd.ms-powerpoint',
+  pptx: 'application/vnd.openxmlformats-officedocument.presentationml.presentation'
+});
+
+function detectDownloadMimeType(filename){
+  const name = String(filename == null ? '' : filename);
+  const dot = name.lastIndexOf('.');
+  if (dot < 0 || dot === name.length - 1) return 'application/octet-stream';
+  const ext = name.slice(dot + 1).toLowerCase();
+  if (!Object.prototype.hasOwnProperty.call(DOWNLOAD_MIME_TYPES, ext)) return 'application/octet-stream';
+  return DOWNLOAD_MIME_TYPES[ext];
 }
+
+function retainDownloadedBlob(transferId, filename, blob){
+  releaseDownloadedBlob(transferId);
+  if (!blob) return null;
+  const oversized = Number.isFinite(blob.size) && blob.size > DOWNLOAD_CACHE_MAX_BYTES;
+  const entry = {
+    transferId,
+    filename: String(filename == null ? '' : filename),
+    mimeType: blob.type || detectDownloadMimeType(filename),
+    size: blob.size,
+    blob,
+    url: null,
+    // A file past the byte budget is never kept for the session. It gets a
+    // short grace window so Open and Download Again work straight after the
+    // transfer, then the bytes are dropped.
+    oversized,
+    expiresAt: oversized ? Date.now() + DOWNLOAD_OVERSIZE_TTL_MS : null,
+    createdAt: Date.now()
+  };
+  if (oversized) {
+    // The grace slot holds one large file at a time; a newer one replaces it.
+    for (const cached of [...state.downloadedBlobs.values()]) {
+      if (cached.oversized) releaseDownloadedBlob(cached.transferId);
+    }
+  }
+  state.downloadedBlobs.set(transferId, entry);
+  pruneDownloadedBlobs(transferId);
+  if (oversized) scheduleOversizedRelease(entry);
+  return entry;
+}
+
+// Map iteration order is completion order, so walking the cache oldest-first
+// and releasing as we go always drops the oldest entries first. The entry that
+// just arrived is never released, which is safe because anything larger than
+// the byte budget is not cached at all — it takes the grace path above, and a
+// cached entry is by definition within the budget on its own.
+function pruneDownloadedBlobs(protectedId){
+  const now = Date.now();
+  for (const entry of [...state.downloadedBlobs.values()]) {
+    if (isDownloadedBlobExpired(entry, now)) releaseDownloadedBlob(entry.transferId);
+  }
+
+  const cached = [...state.downloadedBlobs.values()].filter((entry) => !entry.oversized);
+  const sizeOf = (entry) => (Number.isFinite(entry.size) ? entry.size : 0);
+  let count = cached.length;
+  let totalBytes = cached.reduce((sum, entry) => sum + sizeOf(entry), 0);
+
+  for (const entry of cached) {
+    if (count <= DOWNLOAD_CACHE_MAX_ENTRIES && totalBytes <= DOWNLOAD_CACHE_MAX_BYTES) break;
+    if (entry.transferId === protectedId) continue;
+    releaseDownloadedBlob(entry.transferId);
+    count -= 1;
+    totalBytes -= sizeOf(entry);
+  }
+}
+
+function scheduleOversizedRelease(entry){
+  setTimeout(() => {
+    if (state.downloadedBlobs.get(entry.transferId) !== entry) return;
+    releaseDownloadedBlob(entry.transferId);
+    renderTransfers();
+  }, DOWNLOAD_OVERSIZE_TTL_MS);
+}
+
+function isDownloadedBlobExpired(entry, now = Date.now()){
+  if (!entry || !entry.oversized) return false;
+  if (!Number.isFinite(entry.expiresAt)) return true;
+  return entry.expiresAt <= now;
+}
+
+function getDownloadedBlob(transferId){
+  const entry = state.downloadedBlobs.get(transferId);
+  if (!entry) return null;
+  // Re-checked here as well as on the timer: a throttled background tab must not
+  // keep handing out a file whose grace window has already closed.
+  if (isDownloadedBlobExpired(entry)) {
+    releaseDownloadedBlob(transferId);
+    return null;
+  }
+  return entry.blob;
+}
+
+function hasDownloadedBlob(transferId){
+  const entry = state.downloadedBlobs.get(transferId);
+  if (!entry) return false;
+  if (isDownloadedBlobExpired(entry)) {
+    releaseDownloadedBlob(transferId);
+    return false;
+  }
+  return true;
+}
+
+function revokeDownloadedBlobUrl(entry){
+  if (!entry || !entry.url) return;
+  try { URL.revokeObjectURL(entry.url); } catch (error) { /* already released */ }
+  entry.url = null;
+}
+
+function releaseDownloadedBlob(transferId){
+  const entry = state.downloadedBlobs.get(transferId);
+  if (!entry) return false;
+  revokeDownloadedBlobUrl(entry);
+  state.downloadedBlobs.delete(transferId);
+  return true;
+}
+
+function releaseAllDownloadedBlobs(){
+  for (const entry of state.downloadedBlobs.values()) revokeDownloadedBlobUrl(entry);
+  state.downloadedBlobs.clear();
+}
+
+function downloadedBlobUrl(entry){
+  if (!entry || !entry.blob) return null;
+  if (entry.url) return entry.url;
+  entry.url = URL.createObjectURL(entry.blob);
+  return entry.url;
+}
+
+// Hands the bytes to the browser's own save flow under a short-lived URL so the
+// cached URL used by Open stays valid for the rest of the session.
+function saveDownloadedBlob(entry){
+  const url = URL.createObjectURL(entry.blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = entry.filename || 'download';
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  setTimeout(() => URL.revokeObjectURL(url), DOWNLOAD_URL_TTL_MS);
+  return url;
+}
+
+function openDownloadedFile(transferId){
+  const entry = state.downloadedBlobs.get(transferId);
+  if (!entry || !entry.blob) {
+    toast('This file is no longer held by the browser. Download it again to reopen it.', true);
+    return false;
+  }
+  const url = downloadedBlobUrl(entry);
+  if (!url) return false;
+  // Blob URLs are same-origin, but the viewer tab is still cut off from us.
+  const viewer = window.open(url, '_blank');
+  if (viewer) {
+    try { viewer.opener = null; } catch (error) { /* ignore */ }
+    return true;
+  }
+  saveDownloadedBlob(entry);
+  toast('The viewer was blocked, so the file was downloaded instead.');
+  return true;
+}
+
+function downloadAgain(transferId){
+  const transfer = state.transfers.get(transferId);
+  if (!transfer || transfer.status !== 'Completed' || transfer.direction !== 'download') return false;
+  const entry = state.downloadedBlobs.get(transferId);
+  if (entry && entry.blob) {
+    saveDownloadedBlob(entry);
+    return true;
+  }
+  // The local copy is gone (cache evicted, or the page was reloaded with the
+  // record still around), so fall back to the normal server download flow.
+  downloadFile(transfer.filename);
+  return true;
+}
+
+// Legacy deleteFile removed - use requestDeleteSharedFile, cancelDeleteFile, confirmDeleteFile instead
+
 
 // ---------------------------------------------------------------- transfers
 
 function registerTransfer(id, filename, direction, size){
-  state.transfers.set(id, { filename, direction, size, progress: 0, status: 'Queued' });
+  if (!pruneTransferHistory()) {
+    toast('Transfer list is full. Clear completed or failed transfers first.', true);
+    return false;
+  }
+  state.transfers.set(id, {
+    id, filename, direction, size, totalBytes: Number.isFinite(size) ? size : null,
+    bytesTransferred: 0, progress: 0, speedBps: null, etaSeconds: null,
+    status: 'Queued', queuedAt: Date.now(), startedAt: null, completedAt: null, error: null
+  });
   renderTransfers();
+  return true;
+}
+
+function handleUploadProgress(data){
+  const transfer = state.transfers.get(data.transferId);
+  if (!transfer) return;
+  updateTransfer(data.transferId, {
+    ...transferMetricPatch(data),
+    status: transfer.status === 'Completed' ? 'Completed' : 'Transferring'
+  });
+}
+
+function handleTransferCompleted(data){
+  const transfer = state.transfers.get(data.transferId);
+  updateTransfer(data.transferId, {
+    ...transferMetricPatch(data),
+    progress: 100,
+    bytesTransferred: data.bytesTransferred ?? data.totalBytes ?? (transfer && transfer.totalBytes),
+    status: 'Completed',
+    completedAt: data.completedAt ? Date.parse(data.completedAt) : Date.now()
+  });
+  pendingUploads.delete(data.transferId);
+  if (transfer && transfer.direction === 'upload') delete transfer.file;
+  if (data.direction === 'download') {
+    const buffer = state.downloadBuffers.get(data.transferId);
+    if (buffer) {
+      buffer.transferCompleted = true;
+      if (buffer.lastChunkReceived) finalizeDownload(data.transferId);
+    }
+  }
+  handleListFiles();
+}
+
+function handleTransferCancelled(data){
+  const transfer = state.transfers.get(data.transferId);
+  pendingUploads.delete(data.transferId);
+  state.downloadBuffers.delete(data.transferId);
+  releaseDownloadedBlob(data.transferId);
+  state.pendingDownloadStarts = state.pendingDownloadStarts.filter(id => id !== data.transferId);
+  if (transfer && transfer.direction === 'upload') delete transfer.file;
+  updateTransfer(data.transferId, {
+    ...transferMetricPatch(data),
+    status: 'Cancelled',
+    completedAt: data.completedAt ? Date.parse(data.completedAt) : Date.now()
+  });
+}
+
+function handleTransferFailure(direction, data){
+  let transferId = data.transferId;
+  if (!transferId && direction === 'upload') transferId = state.pendingUploadStart;
+  if (!transferId && direction === 'download') {
+    const pendingId = state.pendingDownloadStarts.find(id => state.transfers.get(id)?.filename === data.filename);
+    if (pendingId) {
+      transferId = pendingId;
+      state.pendingDownloadStarts = state.pendingDownloadStarts.filter(id => id !== pendingId);
+    }
+  }
+  if (!transferId) return;
+  if (state.pendingUploadStart === transferId) state.pendingUploadStart = null;
+  pendingUploads.delete(transferId);
+  state.downloadBuffers.delete(transferId);
+  releaseDownloadedBlob(transferId);
+  state.uploadQueue = state.uploadQueue.filter(id => id !== transferId);
+  state.pendingDownloadStarts = state.pendingDownloadStarts.filter(id => id !== transferId);
+  updateTransfer(transferId, {
+    status: 'Failed', error: data.message || 'Transfer failed.',
+    speedBps: null, etaSeconds: null, completedAt: Date.now()
+  });
+  if (direction === 'upload') pumpUploadQueue();
+}
+
+function handleTransferConnectionLost(){
+  for (const transfer of state.transfers.values()) {
+    if (['Queued', 'Starting', 'Transferring', 'Downloading', 'Cancelling'].includes(transfer.status)) {
+      transfer.status = 'Failed';
+      transfer.error = 'Connection lost before the transfer completed.';
+      transfer.speedBps = null;
+      transfer.etaSeconds = null;
+      transfer.completedAt = Date.now();
+    }
+  }
+  state.uploadQueue = [];
+  state.pendingUploadStart = null;
+  state.pendingDownloadStarts = [];
+  pendingUploads.clear();
+  state.downloadBuffers.clear();
+  renderTransfers();
+}
+
+function transferMetricPatch(data){
+  const patch = {};
+  for (const key of ['progress', 'bytesTransferred', 'totalBytes', 'speedBps', 'etaSeconds']) {
+    if (Number.isFinite(data[key])) patch[key] = data[key];
+  }
+  if (typeof data.startedAt === 'string' || Number.isFinite(data.startedAt)) {
+    const startedAt = typeof data.startedAt === 'string' ? Date.parse(data.startedAt) : data.startedAt;
+    if (Number.isFinite(startedAt)) patch.startedAt = startedAt;
+  }
+  if (typeof data.completedAt === 'string' || Number.isFinite(data.completedAt)) {
+    const completedAt = typeof data.completedAt === 'string' ? Date.parse(data.completedAt) : data.completedAt;
+    if (Number.isFinite(completedAt)) patch.completedAt = completedAt;
+  }
+  return patch;
 }
 
 function updateTransfer(id, patch){
   const t = state.transfers.get(id);
   if (!t) return;
   Object.assign(t, patch);
+  if (['Completed', 'Failed', 'Cancelled'].includes(t.status)) {
+    state.transfers.delete(id);
+    state.transfers.set(id, t);
+    pruneTransferHistory();
+  }
   renderTransfers();
 
   // continue chunked upload once an ack for the previous chunk arrives
@@ -1189,15 +2978,124 @@ function updateTransfer(id, patch){
 }
 
 function renderTransfers(){
-  const rows = [...state.transfers.entries()].reverse();
-  $('transferList').innerHTML = rows.length ? rows.map(([id, t]) => `
-    <div class="file-row" style="flex-wrap:wrap;">
-      <span class="name">${t.direction === 'upload' ? '⬆' : '⬇'} ${esc(t.filename)}</span>
-      <span class="meta">${esc(t.status)}${t.size ? ' · ' + fmtBytes(t.size) : ''}</span>
-      <div class="progress" style="flex-basis:100%;">
-        <div class="progress-fill ${t.status === 'Completed' ? 'done' : ''} ${t.status === 'Failed' ? 'error' : ''}" style="width:${Math.min(100, Math.round(t.progress || 0))}%;"></div>
-      </div>
-    </div>`).join('') : '<div class="status-line">No transfers yet.</div>';
+  const transfers = [...state.transfers.entries()].reverse();
+  const activeStatuses = new Set(['Queued', 'Starting', 'Transferring', 'Downloading', 'Cancelling']);
+  const groups = [
+    { title: 'Active', status: 'active', matches: t => activeStatuses.has(t.status) },
+    { title: 'Completed', status: 'completed', matches: t => t.status === 'Completed' },
+    { title: 'Failed', status: 'failed', matches: t => t.status === 'Failed' },
+    { title: 'Cancelled', status: 'cancelled', matches: t => t.status === 'Cancelled' }
+  ];
+  const counts = Object.fromEntries(groups.map(group => [group.status, transfers.filter(([, transfer]) => group.matches(transfer)).length]));
+  $('transferSummary').innerHTML = groups.map(group => `<span class="badge ${group.status === 'completed' ? 'ok' : group.status === 'failed' ? 'bad' : group.status === 'cancelled' ? 'warn' : ''}">${group.title}: ${counts[group.status]}</span>`).join('');
+  const visibleGroups = groups.filter(group => state.transferFilter === 'all' || state.transferFilter === group.status);
+  const sections = visibleGroups.map(group => {
+    const items = transfers.filter(([, transfer]) => group.matches(transfer));
+    if (!items.length) return '';
+    return `<section class="transfer-group"><h3>${group.title}<span>${items.length}</span></h3>${items.map(([id, transfer]) => renderTransferRow(id, transfer, activeStatuses)).join('')}</section>`;
+  }).join('');
+  $('transferList').innerHTML = sections || '<div class="transfer-empty">No transfers in this view.</div>';
+}
+
+function renderTransferRow(id, transfer, activeStatuses){
+  const totalBytes = Number.isFinite(transfer.totalBytes) ? transfer.totalBytes : transfer.size;
+  const bytesTransferred = Number.isFinite(transfer.bytesTransferred) ? transfer.bytesTransferred : 0;
+  const progress = Number.isFinite(transfer.progress) ? Math.max(0, Math.min(100, transfer.progress)) : 0;
+  const speed = Number.isFinite(transfer.speedBps) && transfer.speedBps > 0 ? `Speed ${fmtBytes(transfer.speedBps)}/s` : '';
+  const eta = Number.isFinite(transfer.etaSeconds) && activeStatuses.has(transfer.status) ? `ETA ${formatTransferDuration(transfer.etaSeconds)}` : '';
+  const started = Number.isFinite(transfer.startedAt) ? `Started ${esc(fmtTime(transfer.startedAt))}` : '';
+  const completed = Number.isFinite(transfer.completedAt) ? `Finished ${esc(fmtTime(transfer.completedAt))}` : '';
+  const bytes = Number.isFinite(totalBytes) ? `${fmtBytes(bytesTransferred)} / ${fmtBytes(totalBytes)}` : '';
+  const statusClass = transfer.status === 'Completed' ? 'ok' : transfer.status === 'Failed' ? 'bad' : transfer.status === 'Cancelled' ? 'warn' : '';
+  const canCancel = activeStatuses.has(transfer.status);
+  // Open is only ever offered when a complete local copy really exists, so a
+  // download whose bytes were never assembled (or were already released) cannot
+  // be reopened. Download Again falls back to the normal server download flow.
+  const isCompletedDownload = transfer.status === 'Completed' && transfer.direction === 'download';
+  const completedActions = isCompletedDownload
+    ? `<button class="btn btn-ghost" type="button" onclick="Dexile.openDownloadedFile('${esc(id)}')" ${hasDownloadedBlob(id) ? '' : 'disabled'}>Open</button>
+       <button class="btn btn-primary transfer-retry" type="button" onclick="Dexile.downloadAgain('${esc(id)}')">Download Again</button>`
+    : '';
+  const actions = canCancel
+    ? `<button class="btn btn-ghost" type="button" onclick="Dexile.cancelTransfer('${esc(id)}')" ${transfer.status === 'Cancelling' ? 'disabled' : ''}>${transfer.status === 'Cancelling' ? 'Cancelling…' : 'Cancel'}</button>`
+    : transfer.status === 'Failed'
+      ? `<button class="btn btn-primary transfer-retry" type="button" onclick="Dexile.retryTransfer('${esc(id)}')" ${transfer.file || transfer.direction === 'download' ? '' : 'disabled'}>Retry</button>`
+      : completedActions;
+  const error = transfer.error ? `<div class="status-line err" style="text-align:left; margin-top:6px;">${esc(transfer.error)}</div>` : '';
+  const fillClass = transfer.status === 'Completed' ? 'done' : transfer.status === 'Failed' ? 'error' : transfer.status === 'Cancelled' ? 'cancelled' : '';
+  return `<article class="transfer-row">
+    <div class="transfer-row-main">
+      <div class="transfer-row-title"><span aria-hidden="true">${transfer.direction === 'upload' ? '↑' : '↓'}</span><span class="transfer-name" title="${esc(transfer.filename)}">${esc(shortenFilename(transfer.filename))}</span><span class="badge ${statusClass}">${esc(transfer.status)}</span></div>
+      <div class="transfer-row-sub"><span>${bytes}</span><span class="transfer-speed">${speed}</span><span>${eta}</span><span>${started}</span><span>${completed}</span></div>
+      <div class="progress"><div class="progress-fill ${fillClass}" style="width:${Math.round(progress)}%;"></div></div>
+      <div class="transfer-row-sub"><span>${Math.round(progress)}%</span></div>${error}
+    </div>
+    <div class="transfer-actions">${actions}</div>
+  </article>`;
+}
+
+function formatTransferDuration(seconds){
+  const safeSeconds = Math.max(0, Math.ceil(seconds));
+  if (safeSeconds < 60) return `${safeSeconds}s`;
+  return `${Math.floor(safeSeconds / 60)}m ${safeSeconds % 60}s`;
+}
+
+function setTransferFilter(filter){
+  if (!['all', 'active', 'completed', 'failed', 'cancelled'].includes(filter)) return;
+  state.transferFilter = filter;
+  renderTransfers();
+}
+
+function clearTransfers(status){
+  if (!['Completed', 'Failed'].includes(status)) return;
+  for (const [id, transfer] of state.transfers) {
+    if (transfer.status !== status) continue;
+    // Dropping the record drops the local copy with it, so the file's bytes and
+    // its object URL are not left behind in memory.
+    releaseDownloadedBlob(id);
+    state.transfers.delete(id);
+  }
+  renderTransfers();
+}
+
+function cancelTransfer(id){
+  const transfer = state.transfers.get(id);
+  if (!transfer || !['Queued', 'Starting', 'Transferring', 'Downloading'].includes(transfer.status)) return;
+  if (id === state.pendingUploadStart || state.pendingDownloadStarts.includes(id)) {
+    transfer.cancelRequested = true;
+    updateTransfer(id, { status: 'Cancelling' });
+    return;
+  }
+  if (state.uploadQueue.includes(id)) {
+    state.uploadQueue = state.uploadQueue.filter(queuedId => queuedId !== id);
+    updateTransfer(id, { status: 'Cancelled', completedAt: Date.now() });
+    return;
+  }
+  pendingUploads.delete(id);
+  if (transfer.direction === 'download') {
+    state.downloadBuffers.delete(id);
+    releaseDownloadedBlob(id);
+  }
+  updateTransfer(id, { status: 'Cancelling' });
+  send({ type: transfer.direction === 'upload' ? 'upload_cancel' : 'download_cancel', transferId: id });
+}
+
+function retryTransfer(id){
+  const transfer = state.transfers.get(id);
+  if (!transfer || transfer.status !== 'Failed') return;
+  if (transfer.direction === 'upload' && transfer.file) uploadFile(transfer.file);
+  else if (transfer.direction === 'download') downloadFile(transfer.filename);
+}
+
+function pruneTransferHistory(){
+  const terminal = new Set(['Completed', 'Failed', 'Cancelled']);
+  while (state.transfers.size >= 200) {
+    const oldestTerminal = [...state.transfers].find(([, transfer]) => terminal.has(transfer.status));
+    if (!oldestTerminal) return false;
+    releaseDownloadedBlob(oldestTerminal[0]);
+    state.transfers.delete(oldestTerminal[0]);
+  }
+  return true;
 }
 
 // ----------------------------------------------------------------- settings
@@ -1218,9 +3116,89 @@ function loadTheme(){
 }
 
 function setFps(v){
-  state.screenFps = parseInt(v, 10);
-  $('fpsVal').textContent = v;
-  if (state.screenSubscribed) send({ type: 'screen_subscribe', fps: state.screenFps });
+  setScreenTargetFps(Number(v));
+}
+
+function setScreenQuality(quality){
+  if (!Object.prototype.hasOwnProperty.call(SCREEN_PROFILE_DEFAULT_FPS, quality)) return;
+  sendScreenConfiguration(quality, SCREEN_PROFILE_DEFAULT_FPS[quality]);
+}
+
+function setScreenTargetFps(fps){
+  if (typeof fps !== 'number' || !SCREEN_CONFIG_FPS.has(fps)) return;
+  sendScreenConfiguration(state.screenQuality, fps);
+}
+
+function sendScreenConfiguration(quality, fps){
+  if (!state.connected || !state.capabilities.screen) {
+    toast('Screen configuration is available when connected to a screen-capable server.', true);
+    return;
+  }
+  state.pendingScreenConfig = { quality, targetFps: fps };
+  renderScreenConfiguration();
+  send({ type: 'screen_config', quality, fps });
+}
+
+function renderScreenConfiguration(){
+  const status = $('screenConfigStatus');
+  if (!status) return;
+  const config = state.pendingScreenConfig || { quality: state.screenQuality, targetFps: state.screenFps };
+  document.querySelectorAll('[data-screen-quality]').forEach(button => {
+    const selected = button.dataset.screenQuality === config.quality;
+    button.setAttribute('aria-pressed', selected ? 'true' : 'false');
+    button.disabled = !state.connected || !state.capabilities.screen || !!state.pendingScreenConfig;
+  });
+  document.querySelectorAll('[data-screen-fps]').forEach(button => {
+    const selected = Number(button.dataset.screenFps) === config.targetFps;
+    button.setAttribute('aria-pressed', selected ? 'true' : 'false');
+    button.disabled = !state.connected || !state.capabilities.screen || !!state.pendingScreenConfig;
+  });
+
+  // Each fact gets its own row so a request is never mistaken for a
+  // measurement: "Target FPS" is what we asked the capture loop for, while
+  // "Measured FPS" is only ever computed from real frame arrival intervals
+  // (and reads N/A until such an interval exists). The profile row is labelled
+  // "Stream profile" because selecting Low/Balanced/High changes capture rate
+  // only — the capture library offers no resolution or JPEG-quality control.
+  setScreenConfigValue('screenProfileValue', SCREEN_PROFILE_LABELS[config.quality] || 'Unknown');
+  setScreenConfigValue('screenTargetValue', String(config.targetFps));
+  setScreenConfigValue('screenMeasuredValue', Number.isFinite(state.measuredScreenFps)
+    ? `${state.measuredScreenFps.toFixed(1)} FPS`
+    : 'N/A');
+
+  let stream = { label: 'Idle', health: 'idle' };
+  if (!state.connected) {
+    stream = { label: 'Disconnected', health: 'disconnected' };
+  } else if (state.screenSubscribed) {
+    if (state.lastFrameReceivedAt === null) stream = { label: 'Starting', health: 'starting' };
+    else {
+      const age = performance.now() - state.lastFrameReceivedAt;
+      stream = age < 5000
+        ? { label: 'Healthy', health: 'healthy' }
+        : age < 15000
+          ? { label: 'Degraded', health: 'degraded' }
+          : { label: 'Stale', health: 'stale' };
+    }
+  }
+  const streamValue = $('screenStreamValue');
+  if (streamValue) {
+    streamValue.textContent = stream.label;
+    streamValue.setAttribute('data-health', stream.health);
+  }
+
+  setScreenConfigValue('screenLatencyValue', Number.isFinite(state.latencyMs)
+    ? `${Math.round(state.latencyMs)} ms`
+    : Number.isFinite(state.connectionQuality && state.connectionQuality.latencyMs)
+      ? `${Math.round(state.connectionQuality.latencyMs)} ms`
+      : 'N/A');
+
+  const pending = $('screenConfigPending');
+  if (pending) pending.textContent = state.pendingScreenConfig ? 'Applying…' : '';
+}
+
+function setScreenConfigValue(id, value){
+  const el = $(id);
+  if (el) el.textContent = value;
 }
 
 // -------------------------------------------------------------------- init
@@ -1228,19 +3206,234 @@ function setFps(v){
 document.addEventListener('DOMContentLoaded', () => {
   loadTheme();
   initTouchpad();
+  initScreenPanning();
   initKeyboardInput();
   initFileDrop();
   document.getElementById('serverAddr').value = localStorage.getItem('dexile-server') || 'localhost:3000';
   document.getElementById('serverAddr').addEventListener('change', (e) => localStorage.setItem('dexile-server', e.target.value));
 });
 
-window.addEventListener('beforeunload', () => { if (state.ws) state.ws.close(); });
+window.addEventListener('beforeunload', () => {
+  releaseAllDownloadedBlobs();
+  if (state.clipboardPollInterval) clearInterval(state.clipboardPollInterval);
+  if (state.ws) state.ws.close();
+});
+
+// ----------------------------------------------------------------- clipboard sync
+
+function toggleClipboard(enabled){
+  state.clipboardEnabled = enabled;
+  if (enabled) {
+    setupClipboardSync();
+    toast('Clipboard sync enabled');
+  } else {
+    teardownClipboardSync();
+    toast('Clipboard sync disabled');
+  }
+}
+
+// ------------------------------------------------------------------ audio streaming
+
+function toggleAudio(enabled){
+  state.audioEnabled = enabled;
+  const audioControls = $('audioControls');
+  
+  if (enabled) {
+    if (audioControls) audioControls.style.display = 'block';
+    setupAudioStreaming();
+    toast('Audio streaming enabled');
+    send({ type: 'audio_enable' });
+  } else {
+    if (audioControls) audioControls.style.display = 'none';
+    teardownAudioStreaming();
+    toast('Audio streaming disabled');
+    send({ type: 'audio_disable' });
+  }
+}
+
+// ---------------------------------------------------------------- media controller
+
+function mediaControl(action){
+  if (!state.connected || !state.ws || state.ws.readyState !== WebSocket.OPEN) {
+    toast('Not connected to server', true);
+    return;
+  }
+  
+  send({ type: 'media_control', action });
+}
+
+function updateMediaInfo(data){
+  const mediaInfo = $('mediaInfo');
+  if (!mediaInfo) return;
+  
+  if (data.playing || data.title) {
+    let info = [];
+    if (data.title) info.push(data.title);
+    if (data.artist) info.push(data.artist);
+    
+    if (info.length > 0) {
+      mediaInfo.textContent = info.join(' - ');
+      mediaInfo.style.color = 'var(--text)';
+    } else {
+      mediaInfo.textContent = data.playing ? 'Media playing' : 'Media paused';
+      mediaInfo.style.color = 'var(--muted)';
+    }
+  } else {
+    mediaInfo.textContent = 'No media playing';
+    mediaInfo.style.color = 'var(--muted)';
+  }
+}
+
+// ------------------------------------------------------------------ audio
+
+function setupAudioStreaming(){
+  // Initialize Web Audio API context for playback
+  if (!state.audioContext) {
+    try {
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      state.audioContext = new AudioContext();
+      
+      // Create gain node for volume control
+      const gainNode = state.audioContext.createGain();
+      gainNode.connect(state.audioContext.destination);
+      gainNode.gain.value = state.audioVolume;
+      state.audioGainNode = gainNode;
+      
+      console.log('Audio context initialized');
+    } catch (error) {
+      console.error('Failed to initialize audio context:', error);
+      toast('Audio not supported in this browser', true);
+      state.audioEnabled = false;
+      $('audioEnabled').checked = false;
+    }
+  }
+}
+
+function teardownAudioStreaming(){
+  if (state.audioContext) {
+    state.audioContext.close();
+    state.audioContext = null;
+    state.audioGainNode = null;
+  }
+}
+
+function setAudioVolume(value){
+  const volume = parseInt(value) / 100;
+  state.audioVolume = volume;
+  
+  const label = $('audioVolumeLabel');
+  if (label) label.textContent = `${value}%`;
+  
+  if (state.audioGainNode) {
+    state.audioGainNode.gain.value = volume;
+  }
+}
+
+function handleAudioData(data){
+  if (!state.audioEnabled || !state.audioContext || !state.audioGainNode) return;
+  
+  // Decode incoming audio data (base64 encoded PCM or similar format)
+  try {
+    // This would decode the audio buffer sent from server
+    // For now, this is a placeholder for the actual implementation
+    console.log('Audio data received:', data.format, data.sampleRate);
+    
+    // In a real implementation, you would:
+    // 1. Decode the base64 audio data
+    // 2. Create an AudioBuffer
+    // 3. Create a BufferSource node
+    // 4. Connect it to the gain node and play
+    
+  } catch (error) {
+    console.error('Failed to play audio:', error);
+  }
+}
+
+// ----------------------------------------------------------------- clipboard
+
+function setupClipboardSync(){
+  if (!navigator.clipboard || !navigator.clipboard.readText) {
+    toast('Clipboard API not available in this browser', true);
+    state.clipboardEnabled = false;
+    $('clipboardEnabled').checked = false;
+    return;
+  }
+  
+  // Poll clipboard periodically (browsers don't have clipboard change events)
+  if (state.clipboardPollInterval) clearInterval(state.clipboardPollInterval);
+  state.clipboardPollInterval = setInterval(checkClipboardChange, 2000);
+  
+  // Also check when window regains focus
+  window.addEventListener('focus', checkClipboardChange);
+}
+
+function teardownClipboardSync(){
+  if (state.clipboardPollInterval) {
+    clearInterval(state.clipboardPollInterval);
+    state.clipboardPollInterval = null;
+  }
+  window.removeEventListener('focus', checkClipboardChange);
+}
+
+async function checkClipboardChange(){
+  if (!state.clipboardEnabled || !state.connected) return;
+  
+  try {
+    const text = await navigator.clipboard.readText();
+    
+    // Validate and check if changed
+    if (!text || text === state.lastClipboardText) return;
+    if (text.length > state.clipboardMaxSize) {
+      console.warn(`Clipboard text too large (${text.length} chars, max ${state.clipboardMaxSize})`);
+      return;
+    }
+    
+    state.lastClipboardText = text;
+    send({ type: 'clipboard_push', text });
+  } catch (err) {
+    // Permission denied or other error - silently ignore
+    console.debug('Clipboard read failed:', err.message);
+  }
+}
+
+function handleClipboardPull(text){
+  if (!state.clipboardEnabled) return;
+  
+  // Validate incoming clipboard text
+  if (typeof text !== 'string') {
+    console.warn('Invalid clipboard_pull: text must be string');
+    return;
+  }
+  if (text.length > state.clipboardMaxSize) {
+    console.warn(`Clipboard_pull text too large (${text.length} chars, max ${state.clipboardMaxSize})`);
+    return;
+  }
+  
+  // Update local clipboard
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(() => {
+      state.lastClipboardText = text;
+    }).catch(err => {
+      console.warn('Failed to write clipboard:', err.message);
+    });
+  }
+}
 
 // exposed API used by inline handlers
 window.Dexile = {
   connect, disconnect, navigate, toggleSidebar, toggleFullscreen,
   toggleScreenSubscribe, setFitMode, sendGesture, toggleModifier, sendSpecialKey,
-  downloadFile, deleteFile, setTheme, setFps
+  downloadFile, setTheme, setScreenQuality, setScreenTargetFps, refreshSessions, manageSession,
+  openEmergencyConfirmation, closeEmergencyConfirmation, confirmEmergencyStop, returnToConnect,
+  cancelTransfer, retryTransfer, clearTransfers, setTransferFilter,
+  openDownloadedFile, downloadAgain,
+  setFilesSearch, setFilesFilter, setFilesSort,
+  downloadSharedFile, previewSharedFile,
+  requestDeleteSharedFile, cancelDeleteFile, confirmDeleteFile,
+  toggleClipboard,
+  zoomScreen, rotateScreen, toggleRemoteFullscreen, captureScreenshot, toggleRecording,
+  toggleAudio, setAudioVolume, mediaControl,
+  refreshDiagnostics, exportDiagnostics
 };
 
 })();

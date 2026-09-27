@@ -1,0 +1,12 @@
+{
+  "ignore": [
+    "transfers",
+    "transfers/**",
+    "transfers/**/*",
+    "transfers/incoming",
+    "transfers/outgoing",
+    "transfers/temp",
+    "transfers/received.json",
+    "*.log"
+  ]
+}
