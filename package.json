@@ -1,0 +1,44 @@
+{
+  "name": "dexile",
+  "version": "2.0.0",
+  "description": "Remote Desktop Control & File Transfer Application",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "postinstall": "node -e \"try{require('robotjs');require('screenshot-desktop');console.log('\\n\\u2705 Native dependencies loaded successfully.\\n')}catch(e){console.log('\\n\\u26a0\\ufe0f  Optional native dependency missing: '+e.message+'\\n   Remote screen/mouse/keyboard control will be unavailable until this is resolved.\\n   See README Troubleshooting section.\\n')}\""
+  },
+  "keywords": [
+    "remote-desktop",
+    "file-transfer",
+    "websocket",
+    "mouse-control",
+    "keyboard-control"
+  ],
+  "author": "Dexile Team",
+  "license": "MIT",
+  "dependencies": {
+    "ws": "^8.18.0",
+    "robotjs": "^0.9.1",
+    "screenshot-desktop": "^1.15.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.7"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "os": [
+    "win32",
+    "darwin",
+    "linux"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dexile/dexile.git"
+  },
+  "bugs": {
+    "url": "https://github.com/dexile/dexile/issues"
+  },
+  "homepage": "https://github.com/dexile/dexile#readme"
+}

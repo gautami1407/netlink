@@ -1,0 +1,1249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Dexile — Remote Desktop Control</title>
+<style>
+:root{
+  --bg:#0B0F14; --surface:#111827; --surface-2:#0F1620; --border:#1F2A37;
+  --primary:#2563EB; --primary-hover:#3B76EF; --success:#16A34A; --warning:#F59E0B; --danger:#DC2626;
+  --text:#F8FAFC; --muted:#94A3B8; --radius:10px;
+  --font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+}
+:root:not([data-theme="dark"]){
+  --bg:#0B0F14; --surface:#111827; --surface-2:#0F1620; --border:#1F2A37;
+  --text:#F8FAFC; --muted:#94A3B8;
+}
+@media (prefers-color-scheme: light){
+  :root:not([data-theme="dark"]){
+    --bg:#F8FAFC; --surface:#FFFFFF; --surface-2:#F1F5F9; --border:#E2E8F0;
+    --text:#0B0F14; --muted:#475569;
+  }
+}
+:root[data-theme="light"]{
+  --bg:#F8FAFC; --surface:#FFFFFF; --surface-2:#F1F5F9; --border:#E2E8F0;
+  --text:#0B0F14; --muted:#475569;
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+html{scroll-padding-top:env(safe-area-inset-top,0px);}
+body{
+  font-family:var(--font); background:var(--bg); color:var(--text);
+  height:100%; overflow:hidden;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+html,body{height:100%;}
+button{font-family:inherit; cursor:pointer;}
+input,textarea{font-family:inherit;}
+::-webkit-scrollbar{width:8px; height:8px;}
+::-webkit-scrollbar-thumb{background:var(--border); border-radius:8px;}
+
+/* ---------- connect screen ---------- */
+#connectScreen{
+  height:100%; display:flex; align-items:center; justify-content:center; flex-direction:column; gap:24px; padding:24px;
+}
+.brand{display:flex; align-items:center; gap:10px; font-size:28px; font-weight:700;}
+.brand .dot{width:10px;height:10px;border-radius:50%;background:var(--primary);}
+.card{
+  background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+  padding:28px; width:100%; max-width:380px;
+}
+.field{margin-bottom:14px;}
+.field label{display:block; font-size:12px; color:var(--muted); margin-bottom:6px; font-weight:600; letter-spacing:.02em;}
+.field input{
+  width:100%; padding:11px 12px; border-radius:8px; border:1px solid var(--border);
+  background:var(--surface-2); color:var(--text); font-size:15px;
+}
+.field input:focus{outline:none; border-color:var(--primary);}
+.btn{
+  border:none; border-radius:8px; padding:11px 18px; font-size:14px; font-weight:600;
+  display:inline-flex; align-items:center; justify-content:center; gap:8px; transition:.15s;
+}
+.btn-primary{background:var(--primary); color:#fff; width:100%;}
+.btn-primary:hover{background:var(--primary-hover);}
+.btn-primary:disabled{opacity:.5; cursor:not-allowed;}
+.btn-ghost{background:transparent; color:var(--text); border:1px solid var(--border);}
+.btn-ghost:hover{border-color:var(--primary);}
+.btn-danger{background:var(--danger); color:#fff;}
+.status-line{font-size:13px; color:var(--muted); text-align:center; min-height:18px;}
+.status-line.err{color:var(--danger);}
+.status-line.ok{color:var(--success);}
+.spinner{
+  width:16px;height:16px;border-radius:50%; border:2px solid rgba(255,255,255,.35); border-top-color:#fff;
+  animation:spin .7s linear infinite; display:inline-block;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ---------- app shell ---------- */
+#app{height:100%; display:none; flex-direction:column;}
+#topbar{
+  height:56px; flex:0 0 auto; display:flex; align-items:center; gap:14px; padding:0 16px;
+  border-bottom:1px solid var(--border); background:var(--surface);
+  padding-top:env(safe-area-inset-top,0px);
+}
+#topbar .brand{font-size:16px;}
+#hamburger{display:none; background:none; border:none; color:var(--text); font-size:20px; padding:6px;}
+.status-pill{
+  display:flex; align-items:center; gap:6px; font-size:12px; color:var(--muted);
+  background:var(--surface-2); border:1px solid var(--border); padding:5px 10px; border-radius:999px;
+}
+.status-pill .dot{width:8px;height:8px;border-radius:50%;background:var(--danger);}
+.status-pill.connected .dot{background:var(--success);}
+.status-pill.reconnecting .dot{background:var(--warning);}
+#topbar-spacer{flex:1;}
+.icon-btn{
+  background:none; border:1px solid var(--border); color:var(--text); border-radius:8px;
+  width:34px; height:34px; display:flex; align-items:center; justify-content:center; font-size:15px;
+}
+.icon-btn:hover{border-color:var(--primary);}
+
+#body{flex:1; display:flex; min-height:0;}
+#sidebar{
+  width:220px; flex:0 0 auto; border-right:1px solid var(--border); background:var(--surface);
+  overflow-y:auto; padding:12px;
+}
+.nav-item{
+  display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:8px; color:var(--muted);
+  font-size:14px; font-weight:500; cursor:pointer; margin-bottom:2px;
+}
+.nav-item .ic{width:18px; text-align:center;}
+.nav-item:hover{background:var(--surface-2); color:var(--text);}
+.nav-item.active{background:var(--primary); color:#fff;}
+.nav-item.disabled{opacity:.4; cursor:not-allowed;}
+.nav-item.disabled:hover{background:none; color:var(--muted);}
+
+#sidebarOverlay{display:none; position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:40;}
+
+#main{flex:1; overflow-y:auto; padding:20px; min-width:0;}
+.view{display:none;}
+.view.active{display:block;}
+.view-title{font-size:20px; font-weight:700; margin-bottom:4px;}
+.view-sub{font-size:13px; color:var(--muted); margin-bottom:20px;}
+
+.grid{display:grid; gap:14px;}
+.grid-2{grid-template-columns:repeat(auto-fit,minmax(260px,1fr));}
+.panel{
+  background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:16px;
+}
+.panel h3{font-size:13px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); margin-bottom:12px; font-weight:700;}
+.kv{display:flex; justify-content:space-between; padding:6px 0; font-size:13px; border-bottom:1px solid var(--border);}
+.kv:last-child{border-bottom:none;}
+.kv .k{color:var(--muted);}
+.kv .v{font-weight:600; text-align:right;}
+.badge{font-size:11px; font-weight:700; padding:2px 8px; border-radius:999px;}
+.badge.ok{background:rgba(22,163,74,.15); color:var(--success);}
+.badge.bad{background:rgba(220,38,38,.15); color:var(--danger);}
+.badge.warn{background:rgba(245,158,11,.15); color:var(--warning);}
+
+/* ---------- remote desktop ---------- */
+.rd-toolbar{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:12px; align-items:center;}
+.rd-toolbar .spacer{flex:1;}
+.rd-stage{
+  background:#000; border:1px solid var(--border); border-radius:var(--radius);
+  min-height:300px; height:calc(100vh - 260px); display:flex; align-items:center; justify-content:center;
+  overflow:auto; position:relative;
+}
+.rd-stage img{display:block;}
+.rd-stage.fit img{max-width:100%; max-height:100%; object-fit:contain;}
+.rd-stage.actual img{max-width:none;}
+.rd-empty{color:var(--muted); font-size:14px; text-align:center; padding:20px;}
+.rd-empty .spinner{margin-bottom:10px;}
+
+/* ---------- touchpad / mouse ---------- */
+.touchpad{
+  background:var(--surface-2); border:2px dashed var(--border); border-radius:var(--radius);
+  min-height:260px; display:flex; align-items:center; justify-content:center; flex-direction:column; gap:6px;
+  color:var(--muted); font-size:13px; text-align:center; cursor:crosshair; user-select:none; touch-action:none;
+}
+.btn-row{display:flex; gap:8px; margin-top:12px; flex-wrap:wrap;}
+
+/* ---------- keyboard ---------- */
+textarea.kbd-input{
+  width:100%; min-height:100px; padding:12px; border-radius:8px; border:1px solid var(--border);
+  background:var(--surface-2); color:var(--text); font-size:14px; resize:vertical;
+}
+.key-grid{display:flex; flex-wrap:wrap; gap:8px; margin-top:12px;}
+.key-btn{
+  background:var(--surface-2); border:1px solid var(--border); color:var(--text); border-radius:8px;
+  padding:8px 12px; font-size:13px; font-weight:600; min-width:46px;
+}
+.key-btn:hover{border-color:var(--primary);}
+.key-btn.toggled{background:var(--primary); color:#fff; border-color:var(--primary);}
+
+/* ---------- gestures ---------- */
+.gesture-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:10px;}
+.gesture-btn{
+  background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+  padding:16px; text-align:center; font-size:13px; font-weight:600;
+}
+.gesture-btn:hover:not(:disabled){border-color:var(--primary);}
+.gesture-btn:disabled{opacity:.4; cursor:not-allowed;}
+.gesture-btn small{display:block; font-weight:400; color:var(--muted); margin-top:4px;}
+
+/* ---------- files ---------- */
+.dropzone{
+  border:2px dashed var(--border); border-radius:var(--radius); padding:32px; text-align:center; color:var(--muted);
+  background:var(--surface);
+}
+.dropzone.dragover{border-color:var(--primary); background:rgba(37,99,235,.06);}
+.file-row{
+  display:flex; align-items:center; gap:12px; padding:10px 12px; border:1px solid var(--border);
+  border-radius:8px; margin-top:8px; background:var(--surface); font-size:13px;
+}
+.file-row .name{flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+.file-row .meta{color:var(--muted); font-size:12px;}
+.progress{height:6px; background:var(--surface-2); border-radius:999px; overflow:hidden; margin-top:6px;}
+.progress-fill{height:100%; background:var(--primary); width:0%; transition:width .2s;}
+.progress-fill.done{background:var(--success);}
+.progress-fill.error{background:var(--danger);}
+
+/* ---------- activity ---------- */
+.activity-row{display:flex; gap:10px; padding:9px 0; border-bottom:1px solid var(--border); font-size:13px;}
+.activity-row:last-child{border-bottom:none;}
+.activity-row .t{color:var(--muted); font-size:11px; white-space:nowrap;}
+
+/* ---------- settings ---------- */
+.seg{display:flex; border:1px solid var(--border); border-radius:8px; overflow:hidden; width:fit-content;}
+.seg button{background:var(--surface); color:var(--text); border:none; padding:8px 16px; font-size:13px; font-weight:600;}
+.seg button.active{background:var(--primary); color:#fff;}
+
+/* ---------- toast ---------- */
+#toasts{position:fixed; bottom:16px; right:16px; z-index:100; display:flex; flex-direction:column; gap:8px; max-width:320px;}
+.toast{
+  background:var(--surface); border:1px solid var(--border); border-left:3px solid var(--primary);
+  border-radius:8px; padding:10px 14px; font-size:13px; box-shadow:0 4px 16px rgba(0,0,0,.3);
+}
+.toast.error{border-left-color:var(--danger);}
+
+/* ---------- responsive ---------- */
+@media (max-width: 860px){
+  #hamburger{display:flex; align-items:center; justify-content:center;}
+  #sidebar{
+    position:fixed; left:0; top:0; bottom:0; z-index:50; transform:translateX(-100%);
+    transition:transform .2s ease; width:240px; padding-top:calc(56px + env(safe-area-inset-top,0px));
+  }
+  #sidebar.open{transform:translateX(0);}
+  #sidebarOverlay.open{display:block;}
+  .rd-stage{height:50vh;}
+}
+</style>
+</head>
+<body>
+
+<div id="connectScreen">
+  <div class="brand"><span class="dot"></span> Dexile</div>
+  <div class="card">
+    <div class="field">
+      <label for="serverAddr">Server address</label>
+      <input id="serverAddr" type="text" placeholder="192.168.1.10:3000" value="localhost:3000" autocomplete="off">
+    </div>
+    <div class="field">
+      <label for="authCode">Authentication code</label>
+      <input id="authCode" type="password" placeholder="8-character code from server console" autocomplete="off">
+    </div>
+    <button class="btn btn-primary" id="connectBtn" onclick="Dexile.connect()">Connect</button>
+    <div class="status-line" id="connectStatus"></div>
+  </div>
+</div>
+
+<div id="app">
+  <div id="topbar">
+    <button id="hamburger" onclick="Dexile.toggleSidebar()">☰</button>
+    <div class="brand"><span class="dot"></span> Dexile</div>
+    <div id="topbar-spacer"></div>
+    <div class="status-pill" id="topStatusPill"><span class="dot"></span><span id="topStatusText">Disconnected</span></div>
+    <span class="status-line" id="latencyLabel" style="min-height:auto;"></span>
+    <button class="icon-btn" title="Fullscreen" onclick="Dexile.toggleFullscreen()">⛶</button>
+    <button class="icon-btn" title="Settings" onclick="Dexile.navigate('settings')">⚙</button>
+    <button class="icon-btn" title="Disconnect" onclick="Dexile.disconnect()">⏻</button>
+  </div>
+
+  <div id="body">
+    <div id="sidebarOverlay" onclick="Dexile.toggleSidebar()"></div>
+    <div id="sidebar">
+      <div class="nav-item active" data-view="dashboard" onclick="Dexile.navigate('dashboard')"><span class="ic">▦</span> Dashboard</div>
+      <div class="nav-item" data-view="remote" onclick="Dexile.navigate('remote')"><span class="ic">🖥</span> Remote Desktop</div>
+      <div class="nav-item" data-view="mouse" onclick="Dexile.navigate('mouse')"><span class="ic">◎</span> Mouse</div>
+      <div class="nav-item" data-view="keyboard" onclick="Dexile.navigate('keyboard')"><span class="ic">⌨</span> Keyboard</div>
+      <div class="nav-item" data-view="gestures" onclick="Dexile.navigate('gestures')"><span class="ic">✋</span> Gestures</div>
+      <div class="nav-item" data-view="files" onclick="Dexile.navigate('files')"><span class="ic">📁</span> Files</div>
+      <div class="nav-item" data-view="transfers" onclick="Dexile.navigate('transfers')"><span class="ic">⇅</span> Transfers</div>
+      <div class="nav-item" data-view="device" onclick="Dexile.navigate('device')"><span class="ic">ℹ</span> Device Info</div>
+      <div class="nav-item" data-view="activity" onclick="Dexile.navigate('activity')"><span class="ic">≡</span> Activity</div>
+      <div class="nav-item" data-view="settings" onclick="Dexile.navigate('settings')"><span class="ic">⚙</span> Settings</div>
+    </div>
+
+    <div id="main">
+
+      <!-- DASHBOARD -->
+      <div class="view active" id="view-dashboard">
+        <div class="view-title">Dashboard</div>
+        <div class="view-sub">Live status of this connection — every value below comes from the server.</div>
+        <div class="grid grid-2">
+          <div class="panel"><h3>Device</h3><div id="dashDevice"></div></div>
+          <div class="panel"><h3>Connection</h3><div id="dashConnection"></div></div>
+          <div class="panel"><h3>Remote Control</h3><div id="dashCapabilities"></div></div>
+          <div class="panel"><h3>Files</h3><div id="dashFiles"></div></div>
+        </div>
+        <div class="panel" style="margin-top:14px;">
+          <h3>Recent Activity</h3>
+          <div id="dashActivity"><div class="status-line">No activity yet.</div></div>
+        </div>
+      </div>
+
+      <!-- REMOTE DESKTOP -->
+      <div class="view" id="view-remote">
+        <div class="view-title">Remote Desktop</div>
+        <div class="view-sub" id="remoteSub">Not subscribed.</div>
+        <div class="rd-toolbar">
+          <button class="btn btn-ghost" id="rdToggleBtn" onclick="Dexile.toggleScreenSubscribe()">Start streaming</button>
+          <div class="seg">
+            <button id="fitBtn" class="active" onclick="Dexile.setFitMode('fit')">Fit</button>
+            <button id="actualBtn" onclick="Dexile.setFitMode('actual')">1:1</button>
+          </div>
+          <div class="spacer"></div>
+          <span class="status-line" id="rdStats" style="min-height:auto;"></span>
+        </div>
+        <div class="rd-stage fit" id="rdStage">
+          <div class="rd-empty" id="rdEmpty">Click "Start streaming" to view the remote screen.</div>
+        </div>
+      </div>
+
+      <!-- MOUSE -->
+      <div class="view" id="view-mouse">
+        <div class="view-title">Mouse</div>
+        <div class="view-sub" id="mouseSub">Drag inside the pad to move the pointer.</div>
+        <div class="touchpad" id="touchpad">
+          <div>Touchpad</div>
+          <div>Drag to move · tap to click · two-finger tap to right-click · press &amp; hold to drag</div>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-ghost" onclick="Dexile.sendGesture('leftClick')">Left click</button>
+          <button class="btn btn-ghost" onclick="Dexile.sendGesture('rightClick')">Right click</button>
+          <button class="btn btn-ghost" onclick="Dexile.sendGesture('doubleClick')">Double click</button>
+          <button class="btn btn-ghost" onclick="Dexile.sendGesture('scrollUp')">Scroll up</button>
+          <button class="btn btn-ghost" onclick="Dexile.sendGesture('scrollDown')">Scroll down</button>
+        </div>
+      </div>
+
+      <!-- KEYBOARD -->
+      <div class="view" id="view-keyboard">
+        <div class="view-title">Keyboard</div>
+        <div class="view-sub">Type below — each keystroke is sent to the remote device as you type.</div>
+        <textarea class="kbd-input" id="kbdInput" placeholder="Type here..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
+        <div class="key-grid">
+          <button class="key-btn" data-mod="ctrlKey" onclick="Dexile.toggleModifier(this,'ctrlKey')">Ctrl</button>
+          <button class="key-btn" data-mod="altKey" onclick="Dexile.toggleModifier(this,'altKey')">Alt</button>
+          <button class="key-btn" data-mod="shiftKey" onclick="Dexile.toggleModifier(this,'shiftKey')">Shift</button>
+          <button class="key-btn" onclick="Dexile.sendSpecialKey('Enter')">Enter</button>
+          <button class="key-btn" onclick="Dexile.sendSpecialKey('Backspace')">Backspace</button>
+          <button class="key-btn" onclick="Dexile.sendSpecialKey('Tab')">Tab</button>
+          <button class="key-btn" onclick="Dexile.sendSpecialKey('Escape')">Esc</button>
+          <button class="key-btn" onclick="Dexile.sendSpecialKey('Delete')">Delete</button>
+          <button class="key-btn" onclick="Dexile.sendSpecialKey('ArrowUp')">↑</button>
+          <button class="key-btn" onclick="Dexile.sendSpecialKey('ArrowDown')">↓</button>
+          <button class="key-btn" onclick="Dexile.sendSpecialKey('ArrowLeft')">←</button>
+          <button class="key-btn" onclick="Dexile.sendSpecialKey('ArrowRight')">→</button>
+          <button class="key-btn" onclick="Dexile.sendSpecialKey('Home')">Home</button>
+          <button class="key-btn" onclick="Dexile.sendSpecialKey('End')">End</button>
+          <button class="key-btn" onclick="Dexile.sendSpecialKey('F1')">F1</button>
+          <button class="key-btn" onclick="Dexile.sendSpecialKey('F2')">F2</button>
+          <button class="key-btn" onclick="Dexile.sendSpecialKey('F3')">F3</button>
+          <button class="key-btn" onclick="Dexile.sendSpecialKey('F4')">F4</button>
+          <button class="key-btn" onclick="Dexile.sendSpecialKey('F5')">F5</button>
+        </div>
+      </div>
+
+      <!-- GESTURES -->
+      <div class="view" id="view-gestures">
+        <div class="view-title">Gestures</div>
+        <div class="view-sub">Only gestures the connected server genuinely supports are enabled.</div>
+        <div class="gesture-grid" id="gestureGrid"></div>
+      </div>
+
+      <!-- FILES -->
+      <div class="view" id="view-files">
+        <div class="view-title">Files</div>
+        <div class="view-sub">Upload sends mobile → desktop. Files listed as "On desktop" can be downloaded to this device.</div>
+        <div class="dropzone" id="dropzone">
+          <div>📁 Drag &amp; drop files here, or</div>
+          <input type="file" id="fileInput" multiple style="display:none;">
+          <button class="btn btn-ghost" style="margin-top:10px;" onclick="document.getElementById('fileInput').click()">Select files</button>
+        </div>
+        <div class="panel" style="margin-top:16px;">
+          <h3>On desktop (available to download)</h3>
+          <div id="outgoingList"><div class="status-line">Loading…</div></div>
+        </div>
+      </div>
+
+      <!-- TRANSFERS -->
+      <div class="view" id="view-transfers">
+        <div class="view-title">Transfers</div>
+        <div class="view-sub">Real-time status of uploads and downloads for this session.</div>
+        <div id="transferList"><div class="status-line">No transfers yet.</div></div>
+      </div>
+
+      <!-- DEVICE INFO -->
+      <div class="view" id="view-device">
+        <div class="view-title">Device Information</div>
+        <div class="view-sub">Reported directly by the connected server.</div>
+        <div class="panel"><div id="deviceInfoFull"></div></div>
+      </div>
+
+      <!-- ACTIVITY -->
+      <div class="view" id="view-activity">
+        <div class="view-title">Activity</div>
+        <div class="view-sub">A live log of real events on this connection.</div>
+        <div class="panel"><div id="activityFull"><div class="status-line">No activity yet.</div></div></div>
+      </div>
+
+      <!-- SETTINGS -->
+      <div class="view" id="view-settings">
+        <div class="view-title">Settings</div>
+        <div class="grid grid-2">
+          <div class="panel">
+            <h3>Appearance</h3>
+            <div class="seg" id="themeSeg">
+              <button data-theme="light" onclick="Dexile.setTheme('light')">Light</button>
+              <button data-theme="dark" onclick="Dexile.setTheme('dark')">Dark</button>
+              <button data-theme="system" onclick="Dexile.setTheme('system')">System</button>
+            </div>
+          </div>
+          <div class="panel">
+            <h3>Screen streaming</h3>
+            <div class="field">
+              <label for="fpsRange">Target FPS: <span id="fpsVal">6</span></label>
+              <input type="range" id="fpsRange" min="1" max="15" value="6" oninput="Dexile.setFps(this.value)">
+            </div>
+          </div>
+          <div class="panel">
+            <h3>Connection</h3>
+            <button class="btn btn-danger" onclick="Dexile.disconnect()">Disconnect</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div id="toasts"></div>
+
+<script>
+(function(){
+"use strict";
+
+const state = {
+  ws: null,
+  connected: false,
+  reconnecting: false,
+  manualDisconnect: false,
+  clientId: null,
+  capabilities: {},
+  device: {},
+  serverAddr: '',
+  authCode: '',
+  latencyMs: null,
+  pingInterval: null,
+  reconnectAttempts: 0,
+  screenSubscribed: false,
+  screenFps: 6,
+  lastFrameTime: 0,
+  frameCount: 0,
+  fitMode: 'fit',
+  modifiers: { ctrlKey: false, altKey: false, shiftKey: false },
+  transfers: new Map(), // transferId -> {filename, direction, progress, status}
+  activity: [],
+  uploadQueue: [],
+  downloadBuffers: new Map(), // transferId -> {chunks:[], fileSize, filename, chunkSize}
+};
+
+function $(id){ return document.getElementById(id); }
+function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function fmtBytes(n){
+  if (n === 0 || n == null) return '0 Bytes';
+  const k = 1024, sizes = ['Bytes','KB','MB','GB'];
+  const i = Math.floor(Math.log(n) / Math.log(k));
+  return (n / Math.pow(k, i)).toFixed(2) + ' ' + sizes[i];
+}
+function fmtTime(ts){
+  try { return new Date(ts).toLocaleTimeString(); } catch(e){ return ''; }
+}
+function toast(msg, isError){
+  const el = document.createElement('div');
+  el.className = 'toast' + (isError ? ' error' : '');
+  el.textContent = msg;
+  $('toasts').appendChild(el);
+  setTimeout(() => el.remove(), 5000);
+}
+
+// ---------------------------------------------------------------- connect
+
+function connect(){
+  const addr = $('serverAddr').value.trim();
+  const code = $('authCode').value.trim();
+  if (!addr || !code) { setConnectStatus('Enter a server address and authentication code.', true); return; }
+  state.serverAddr = addr;
+  state.authCode = code;
+  state.manualDisconnect = false;
+  state.reconnectAttempts = 0;
+  openSocket();
+}
+
+function openSocket(){
+  setConnectStatus('Connecting…');
+  $('connectBtn').disabled = true;
+
+  let ws;
+  try {
+    ws = new WebSocket(`ws://${state.serverAddr}`);
+  } catch (e) {
+    setConnectStatus('Invalid server address.', true);
+    $('connectBtn').disabled = false;
+    return;
+  }
+  state.ws = ws;
+
+  const connectTimeout = setTimeout(() => {
+    if (ws.readyState !== WebSocket.OPEN) {
+      ws.close();
+      setConnectStatus('Connection timed out. Check the address and that the server is running.', true);
+      $('connectBtn').disabled = false;
+    }
+  }, 8000);
+
+  ws.onopen = () => {
+    clearTimeout(connectTimeout);
+    setConnectStatus('Authenticating…');
+    send({ type: 'auth', code: state.authCode });
+  };
+
+  ws.onmessage = (evt) => {
+    let data;
+    try { data = JSON.parse(evt.data); } catch(e){ return; }
+    handleServerMessage(data);
+  };
+
+  ws.onclose = () => {
+    clearTimeout(connectTimeout);
+    const wasConnected = state.connected;
+    state.connected = false;
+    updateTopStatus();
+    stopPing();
+    if (state.manualDisconnect) {
+      showConnectScreen();
+      setConnectStatus('');
+      $('connectBtn').disabled = false;
+      return;
+    }
+    if (wasConnected) {
+      attemptReconnect();
+    } else {
+      setConnectStatus('Could not connect. Check the address and that the server is running.', true);
+      $('connectBtn').disabled = false;
+    }
+  };
+
+  ws.onerror = () => { /* onclose follows; message handled there */ };
+}
+
+function attemptReconnect(){
+  state.reconnecting = true;
+  updateTopStatus();
+  state.reconnectAttempts += 1;
+  if (state.reconnectAttempts > 8) {
+    toast('Lost connection to the server and could not reconnect.', true);
+    state.reconnecting = false;
+    showConnectScreen();
+    return;
+  }
+  const delay = Math.min(1000 * state.reconnectAttempts, 8000);
+  setTimeout(() => {
+    if (state.manualDisconnect) return;
+    openSocket();
+  }, delay);
+}
+
+function disconnect(){
+  state.manualDisconnect = true;
+  state.reconnecting = false;
+  if (state.ws) state.ws.close();
+  stopPing();
+  showConnectScreen();
+}
+
+function setConnectStatus(msg, isError){
+  const el = $('connectStatus');
+  el.textContent = msg || '';
+  el.className = 'status-line' + (isError ? ' err' : '');
+}
+
+function showConnectScreen(){
+  $('connectScreen').style.display = 'flex';
+  $('app').style.display = 'none';
+}
+
+function showApp(){
+  $('connectScreen').style.display = 'none';
+  $('app').style.display = 'flex';
+}
+
+function send(obj){
+  if (state.ws && state.ws.readyState === WebSocket.OPEN) {
+    state.ws.send(JSON.stringify(obj));
+  }
+}
+
+// ---------------------------------------------------------- server events
+
+function handleServerMessage(data){
+  switch (data.type) {
+    case 'auth_success':
+      state.connected = true;
+      state.reconnecting = false;
+      state.reconnectAttempts = 0;
+      state.clientId = data.clientId;
+      state.capabilities = data.capabilities || {};
+      state.device = data.device || {};
+      $('connectBtn').disabled = false;
+      showApp();
+      updateTopStatus();
+      renderCapabilityGating();
+      renderDashboard();
+      renderDeviceInfo();
+      startPing();
+      refreshStatus();
+      handleListFiles(); // pre-warm the files view
+      if (state.screenWasSubscribed) toggleScreenSubscribe(true);
+      break;
+
+    case 'auth_failed':
+      setConnectStatus(data.message || 'Authentication failed.', true);
+      $('connectBtn').disabled = false;
+      if (state.ws) { state.manualDisconnect = true; state.ws.close(); }
+      break;
+
+    case 'pong': {
+      const rtt = Date.now() - data.clientTime;
+      state.latencyMs = rtt;
+      $('latencyLabel').textContent = rtt + ' ms';
+      break;
+    }
+
+    case 'status':
+      state.device = data.device || state.device;
+      state.capabilities = data.capabilities || state.capabilities;
+      state.lastStatus = data;
+      renderDashboard();
+      renderDeviceInfo();
+      break;
+
+    case 'activity':
+      pushActivity(data.activity);
+      break;
+
+    case 'error':
+      toast(data.message, true);
+      break;
+
+    case 'screen_frame':
+      renderScreenFrame(data);
+      break;
+    case 'screen_error':
+      $('rdEmpty').style.display = 'flex';
+      $('rdEmpty').innerHTML = 'Screen error: ' + esc(data.message);
+      state.screenSubscribed = false;
+      $('rdToggleBtn').textContent = 'Start streaming';
+      break;
+
+    case 'upload_started':
+      onUploadStarted(data);
+      break;
+    case 'upload_progress':
+      updateTransfer(data.transferId, { progress: data.progress, status: 'Transferring' });
+      break;
+    case 'upload_error':
+      toast('Upload failed: ' + data.message, true);
+      updateTransfer(data.transferId, { status: 'Failed', error: data.message });
+      break;
+
+    case 'transfer_progress':
+      updateTransfer(data.transferId, { progress: data.progress });
+      break;
+    case 'transfer_completed':
+      updateTransfer(data.transferId, { progress: 100, status: 'Completed' });
+      if (data.direction === 'download') finalizeDownload(data.transferId);
+      handleListFiles();
+      break;
+    case 'transfer_cancelled':
+      updateTransfer(data.transferId, { status: 'Cancelled' });
+      break;
+
+    case 'file_list':
+      renderFileList(data);
+      break;
+
+    case 'download_started':
+      state.downloadBuffers.set(data.transferId, { chunks: [], fileSize: data.fileSize, filename: data.filename, chunkSize: data.chunkSize, nextIndex: 0 });
+      registerTransfer(data.transferId, data.filename, 'download', data.fileSize);
+      requestNextDownloadChunk(data.transferId);
+      break;
+    case 'download_chunk':
+      onDownloadChunk(data);
+      break;
+    case 'download_error':
+      toast('Download failed: ' + data.message, true);
+      break;
+
+    case 'file_deleted':
+      toast(`Deleted ${data.filename}`);
+      handleListFiles();
+      break;
+  }
+}
+
+// -------------------------------------------------------------- top status
+
+function updateTopStatus(){
+  const pill = $('topStatusPill');
+  const text = $('topStatusText');
+  pill.classList.remove('connected', 'reconnecting');
+  if (state.connected) {
+    pill.classList.add('connected');
+    text.textContent = state.device.hostname ? `Connected — ${state.device.hostname}` : 'Connected';
+  } else if (state.reconnecting) {
+    pill.classList.add('reconnecting');
+    text.textContent = 'Reconnecting…';
+  } else {
+    text.textContent = 'Disconnected';
+    $('latencyLabel').textContent = '';
+  }
+}
+
+function startPing(){
+  stopPing();
+  state.pingInterval = setInterval(() => send({ type: 'ping', t: Date.now() }), 4000);
+}
+function stopPing(){
+  if (state.pingInterval) clearInterval(state.pingInterval);
+  state.pingInterval = null;
+}
+function refreshStatus(){ send({ type: 'get_status' }); }
+
+// ------------------------------------------------------------------- nav
+
+function navigate(view){
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const target = $('view-' + view);
+  if (target) target.classList.add('active');
+  const nav = document.querySelector(`.nav-item[data-view="${view}"]`);
+  if (nav) nav.classList.add('active');
+  if (window.innerWidth <= 860) closeSidebar();
+
+  if (view === 'files') handleListFiles();
+  if (view !== 'remote' && state.screenSubscribed) {
+    // Keep bandwidth down: stop streaming when the user leaves the tab.
+    toggleScreenSubscribe(true);
+  }
+}
+
+function toggleSidebar(){
+  $('sidebar').classList.toggle('open');
+  $('sidebarOverlay').classList.toggle('open');
+}
+function closeSidebar(){
+  $('sidebar').classList.remove('open');
+  $('sidebarOverlay').classList.remove('open');
+}
+
+function toggleFullscreen(){
+  if (!document.fullscreenElement) document.documentElement.requestFullscreen().catch(()=>{});
+  else document.exitFullscreen().catch(()=>{});
+}
+
+// ---------------------------------------------------------- capability UI
+
+function renderCapabilityGating(){
+  const caps = state.capabilities;
+  document.querySelector('.nav-item[data-view="remote"]').classList.toggle('disabled', !caps.screen);
+  document.querySelector('.nav-item[data-view="mouse"]').classList.toggle('disabled', !caps.mouse);
+  document.querySelector('.nav-item[data-view="keyboard"]').classList.toggle('disabled', !caps.keyboard);
+  document.querySelector('.nav-item[data-view="gestures"]').classList.toggle('disabled', !caps.gestures);
+  renderGestureGrid();
+}
+
+function renderGestureGrid(){
+  const caps = state.capabilities;
+  const platform = state.device.platform;
+  const gestures = [
+    { g: 'leftClick', label: 'Left click', support: true },
+    { g: 'rightClick', label: 'Right click', support: true },
+    { g: 'doubleClick', label: 'Double click', support: true },
+    { g: 'scrollUp', label: 'Scroll up', support: true },
+    { g: 'scrollDown', label: 'Scroll down', support: true },
+    { g: 'twoFingerSwipeLeft', label: '2-finger swipe left', support: true, note: 'App switch' },
+    { g: 'twoFingerSwipeRight', label: '2-finger swipe right', support: true, note: 'App switch' },
+    { g: 'threeFingerSwipeUp', label: '3-finger swipe up', support: platform !== 'linux', note: platform === 'linux' ? 'Not supported on Linux' : 'Task view' },
+  ];
+  const grid = $('gestureGrid');
+  grid.innerHTML = gestures.map(item => `
+    <button class="gesture-btn" ${(!caps.gestures || !item.support) ? 'disabled' : ''} onclick="Dexile.sendGesture('${item.g}')">
+      ${esc(item.label)}${item.note ? `<small>${esc(item.note)}</small>` : ''}
+    </button>`).join('');
+}
+
+// ----------------------------------------------------------------- dashboard
+
+function renderDashboard(){
+  const d = state.device, caps = state.capabilities;
+  $('dashDevice').innerHTML = [
+    kv('Hostname', d.hostname),
+    kv('Platform', d.platform),
+    kv('Architecture', d.arch),
+    kv('LAN address', d.lanAddress),
+  ].join('');
+
+  const uptime = state.lastStatus ? state.lastStatus.uptimeSeconds : null;
+  $('dashConnection').innerHTML = [
+    kv('Status', state.connected ? 'Connected' : 'Disconnected'),
+    kv('Latency', state.latencyMs != null ? state.latencyMs + ' ms' : 'Unavailable'),
+    kv('Server uptime', uptime != null ? uptime + 's' : 'Unavailable'),
+    kv('Connected clients', state.lastStatus ? state.lastStatus.connectedClients : 'Unavailable'),
+  ].join('');
+
+  $('dashCapabilities').innerHTML = [
+    capRow('Screen', caps.screen, caps.screenUnavailableReason),
+    capRow('Mouse', caps.mouse, caps.controlUnavailableReason),
+    capRow('Keyboard', caps.keyboard, caps.controlUnavailableReason),
+    capRow('Gestures', caps.gestures, caps.controlUnavailableReason),
+  ].join('');
+
+  const stats = state.lastStatus ? state.lastStatus.transferStats : null;
+  $('dashFiles').innerHTML = stats ? [
+    kv('Active transfers', stats.activeTransfers),
+    kv('Completed', stats.completedTransfers),
+    kv('Total transferred', stats.totalDataTransferred),
+    kv('Success rate', stats.successRate),
+  ].join('') : '<div class="status-line">Unavailable</div>';
+
+  const recent = state.activity.slice(-8).reverse();
+  $('dashActivity').innerHTML = recent.length
+    ? recent.map(activityRow).join('')
+    : '<div class="status-line">No activity yet.</div>';
+}
+
+function kv(k, v){
+  return `<div class="kv"><span class="k">${esc(k)}</span><span class="v">${v == null || v === '' ? 'Unavailable' : esc(v)}</span></div>`;
+}
+function capRow(label, ok, reason){
+  const badge = ok ? '<span class="badge ok">Available</span>' : '<span class="badge bad">Unavailable</span>';
+  return `<div class="kv"><span class="k">${esc(label)}</span><span class="v">${badge}</span></div>` +
+    (!ok && reason ? `<div class="status-line" style="text-align:left; margin:-2px 0 6px;">${esc(reason)}</div>` : '');
+}
+
+function renderDeviceInfo(){
+  const d = state.device;
+  $('deviceInfoFull').innerHTML = [
+    kv('Hostname', d.hostname), kv('Platform', d.platform), kv('Architecture', d.arch),
+    kv('OS release', d.osRelease), kv('Node.js version', d.nodeVersion), kv('LAN address', d.lanAddress),
+    kv('CPU count', d.cpuCount), kv('Total memory', d.totalMemory), kv('Free memory', d.freeMemory),
+  ].join('');
+}
+
+// ----------------------------------------------------------------- activity
+
+function pushActivity(entry){
+  state.activity.push(entry);
+  if (state.activity.length > 200) state.activity.shift();
+  renderActivityFull();
+  if (document.getElementById('view-dashboard').classList.contains('active')) renderDashboard();
+}
+function activityRow(a){
+  return `<div class="activity-row"><span class="t">${esc(fmtTime(a.timestamp))}</span><span>${esc(a.message)}</span></div>`;
+}
+function renderActivityFull(){
+  const list = state.activity.slice().reverse();
+  $('activityFull').innerHTML = list.length ? list.map(activityRow).join('') : '<div class="status-line">No activity yet.</div>';
+}
+
+// -------------------------------------------------------------- remote desktop
+
+function toggleScreenSubscribe(forceOff){
+  if (forceOff || state.screenSubscribed) {
+    send({ type: 'screen_unsubscribe' });
+    state.screenSubscribed = false;
+    $('rdToggleBtn').textContent = 'Start streaming';
+    $('remoteSub').textContent = 'Not subscribed.';
+    return;
+  }
+  if (!state.capabilities.screen) {
+    toast('Screen capture is unavailable on this server: ' + (state.capabilities.screenUnavailableReason || 'unknown reason'), true);
+    return;
+  }
+  $('rdEmpty').style.display = 'flex';
+  $('rdEmpty').innerHTML = '<div class="spinner"></div><div style="margin-top:8px;">Waiting for first frame…</div>';
+  send({ type: 'screen_subscribe', fps: state.screenFps });
+  state.screenSubscribed = true;
+  state.screenWasSubscribed = true;
+  $('rdToggleBtn').textContent = 'Stop streaming';
+  $('remoteSub').textContent = 'Streaming…';
+}
+
+function renderScreenFrame(data){
+  const stage = $('rdStage');
+  let img = document.getElementById('rdImg');
+  if (!img) {
+    stage.innerHTML = '';
+    img = document.createElement('img');
+    img.id = 'rdImg';
+    stage.appendChild(img);
+  }
+  img.src = 'data:image/jpeg;base64,' + data.data;
+  $('rdStats').textContent = `${data.fps ? data.fps.toFixed(1) : '—'} fps · capture ${data.captureMs}ms`;
+  $('remoteSub').textContent = `Streaming — frame #${data.seq}`;
+}
+
+function setFitMode(mode){
+  state.fitMode = mode;
+  const stage = $('rdStage');
+  stage.classList.toggle('fit', mode === 'fit');
+  stage.classList.toggle('actual', mode === 'actual');
+  $('fitBtn').classList.toggle('active', mode === 'fit');
+  $('actualBtn').classList.toggle('active', mode === 'actual');
+}
+
+// -------------------------------------------------------------------- mouse
+
+const LONG_PRESS_MS = 350;
+const MOVE_CANCEL_PX = 8; // movement beyond this cancels a tap/long-press
+
+function initTouchpad(){
+  const pad = $('touchpad');
+  const active = new Map(); // pointerId -> {x,y}
+  let primaryId = null;
+  let lastX = 0, lastY = 0, startX = 0, startY = 0, startTime = 0;
+  let moved = false, wasTwoFinger = false, longPressFired = false, buttonDown = false;
+  let longPressTimer = null;
+
+  function guard(){
+    if (!state.capabilities.mouse) { toast('Mouse control is unavailable on this server.', true); return false; }
+    return true;
+  }
+
+  function clearLongPressTimer(){
+    if (longPressTimer) { clearTimeout(longPressTimer); longPressTimer = null; }
+  }
+
+  function releaseButtonIfHeld(){
+    if (buttonDown) {
+      send({ type: 'mouse_button', button: 'left', action: 'up' });
+      buttonDown = false;
+    }
+  }
+
+  pad.addEventListener('pointerdown', (e) => {
+    if (!guard()) return;
+    pad.setPointerCapture(e.pointerId);
+    active.set(e.pointerId, { x: e.clientX, y: e.clientY });
+
+    if (active.size === 1) {
+      // Start of a fresh single-finger gesture: could become a tap, a drag
+      // (long-press + move), or plain relative movement.
+      primaryId = e.pointerId;
+      lastX = startX = e.clientX; lastY = startY = e.clientY;
+      startTime = Date.now(); moved = false; wasTwoFinger = false; longPressFired = false;
+      clearLongPressTimer();
+      longPressTimer = setTimeout(() => {
+        if (active.size === 1 && !moved) {
+          longPressFired = true;
+          send({ type: 'mouse_button', button: 'left', action: 'down' });
+          buttonDown = true;
+        }
+      }, LONG_PRESS_MS);
+    } else if (active.size === 2) {
+      // A second finger landed while the first is still down — this is a
+      // two-finger gesture (right-click on release), not a drag.
+      wasTwoFinger = true;
+      clearLongPressTimer();
+      releaseButtonIfHeld();
+    }
+  });
+
+  pad.addEventListener('pointermove', (e) => {
+    if (!active.has(e.pointerId) || !state.connected) return;
+    active.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    if (e.pointerId !== primaryId || active.size !== 1) return; // only the lone primary finger drives the cursor
+
+    const dx = e.clientX - lastX, dy = e.clientY - lastY;
+    lastX = e.clientX; lastY = e.clientY;
+    if (Math.hypot(e.clientX - startX, e.clientY - startY) > MOVE_CANCEL_PX) {
+      moved = true;
+      clearLongPressTimer(); // real movement before the hold fired means "move", not "long-press"
+    }
+    if (dx || dy) send({ type: 'mouse_move', deltaX: dx, deltaY: dy });
+  });
+
+  function end(e){
+    if (!active.has(e.pointerId)) return;
+    const hadTwoFingers = wasTwoFinger;
+    const wasPrimary = e.pointerId === primaryId;
+    active.delete(e.pointerId);
+
+    if (active.size === 0) {
+      clearLongPressTimer();
+      const duration = Date.now() - startTime;
+      if (buttonDown) {
+        releaseButtonIfHeld(); // end of a drag
+      } else if (hadTwoFingers) {
+        if (duration < 400) sendGesture('rightClick');
+      } else if (wasPrimary && !moved && !longPressFired && duration < LONG_PRESS_MS) {
+        sendGesture('leftClick');
+      }
+      wasTwoFinger = false; primaryId = null;
+    }
+  }
+  pad.addEventListener('pointerup', end);
+  pad.addEventListener('pointercancel', end);
+}
+
+function sendGesture(g){
+  if (!state.capabilities.gestures && ['leftClick','rightClick','doubleClick','scrollUp','scrollDown'].includes(g)) {
+    // basic clicks also require mouse capability
+    if (!state.capabilities.mouse) { toast('Mouse control is unavailable on this server.', true); return; }
+  }
+  send({ type: 'gesture', gesture: g });
+}
+
+// ----------------------------------------------------------------- keyboard
+
+function toggleModifier(btn, mod){
+  state.modifiers[mod] = !state.modifiers[mod];
+  btn.classList.toggle('toggled', state.modifiers[mod]);
+}
+
+function initKeyboardInput(){
+  const el = $('kbdInput');
+  el.addEventListener('keydown', (e) => {
+    if (!state.capabilities.keyboard) { toast('Keyboard control is unavailable on this server.', true); e.preventDefault(); return; }
+    if (['Control','Alt','Shift','Meta'].includes(e.key)) return;
+    e.preventDefault();
+    send({
+      type: 'keyboard', key: e.key,
+      ctrlKey: e.ctrlKey || state.modifiers.ctrlKey,
+      altKey: e.altKey || state.modifiers.altKey,
+      shiftKey: e.shiftKey || state.modifiers.shiftKey,
+      metaKey: e.metaKey
+    });
+  });
+}
+
+function sendSpecialKey(key){
+  if (!state.capabilities.keyboard) { toast('Keyboard control is unavailable on this server.', true); return; }
+  send({ type: 'keyboard', key, ctrlKey: state.modifiers.ctrlKey, altKey: state.modifiers.altKey, shiftKey: state.modifiers.shiftKey });
+}
+
+// -------------------------------------------------------------------- files
+
+function initFileDrop(){
+  const dz = $('dropzone');
+  dz.addEventListener('dragover', (e) => { e.preventDefault(); dz.classList.add('dragover'); });
+  dz.addEventListener('dragleave', () => dz.classList.remove('dragover'));
+  dz.addEventListener('drop', (e) => {
+    e.preventDefault(); dz.classList.remove('dragover');
+    handleFiles(e.dataTransfer.files);
+  });
+  $('fileInput').addEventListener('change', (e) => handleFiles(e.target.files));
+}
+
+function handleFiles(fileList){
+  Array.from(fileList).forEach(uploadFile);
+}
+
+const pendingUploads = new Map(); // transferId -> {file, chunkSize, nextIndex}
+
+async function uploadFile(file){
+  send({ type: 'upload_start', filename: file.name, fileSize: file.size });
+  pendingUploads.set('__pending_' + file.name + file.size, { file });
+}
+
+function onUploadStarted(data){
+  // Match by scanning pending placeholder entries (single-flight assumption is fine for this UI).
+  const key = [...pendingUploads.keys()].find(k => k.startsWith('__pending_'));
+  if (!key) return;
+  const entry = pendingUploads.get(key);
+  pendingUploads.delete(key);
+  entry.chunkSize = data.chunkSize;
+  entry.nextIndex = 0;
+  pendingUploads.set(data.transferId, entry);
+  registerTransfer(data.transferId, entry.file.name, 'upload', entry.file.size);
+  sendNextUploadChunk(data.transferId);
+}
+
+async function sendNextUploadChunk(transferId){
+  const entry = pendingUploads.get(transferId);
+  if (!entry) return;
+  const { file, chunkSize, nextIndex } = entry;
+  const start = nextIndex * chunkSize;
+  if (start >= file.size) return;
+  const slice = file.slice(start, start + chunkSize);
+  const buf = await slice.arrayBuffer();
+  const b64 = arrayBufferToBase64(buf);
+  const isLast = start + chunkSize >= file.size;
+  send({ type: 'upload_chunk', transferId, chunkIndex: nextIndex, data: b64, isLastChunk: isLast });
+  entry.nextIndex += 1;
+  if (!isLast) {
+    // wait for the next upload_progress ack before sending more (handled in updateTransfer hook)
+    entry.awaitingAck = true;
+  } else {
+    pendingUploads.delete(transferId);
+  }
+}
+
+function arrayBufferToBase64(buffer){
+  let binary = '';
+  const bytes = new Uint8Array(buffer);
+  const chunk = 0x8000;
+  for (let i = 0; i < bytes.length; i += chunk) {
+    binary += String.fromCharCode.apply(null, bytes.subarray(i, i + chunk));
+  }
+  return btoa(binary);
+}
+
+function handleListFiles(){
+  if (state.connected) send({ type: 'list_files' });
+}
+
+function renderFileList(data){
+  const list = data.outgoing || [];
+  $('outgoingList').innerHTML = list.length ? list.map(f => `
+    <div class="file-row">
+      <span class="name">${esc(f.filename)}</span>
+      <span class="meta">${esc(f.formattedSize)}</span>
+      <button class="btn btn-ghost" style="padding:6px 10px;" onclick="Dexile.downloadFile('${esc(f.filename).replace(/'/g,"\\'")}')">Download</button>
+      <button class="btn btn-ghost" style="padding:6px 10px;" onclick="Dexile.deleteFile('${esc(f.filename).replace(/'/g,"\\'")}','outgoing')">Delete</button>
+    </div>`).join('') : '<div class="status-line">No files placed for download on the desktop yet.</div>';
+}
+
+function downloadFile(filename){
+  send({ type: 'download_start', filename });
+}
+
+function requestNextDownloadChunk(transferId){
+  const buf = state.downloadBuffers.get(transferId);
+  if (!buf) return;
+  send({ type: 'download_chunk_request', transferId, chunkIndex: buf.nextIndex });
+}
+
+function onDownloadChunk(data){
+  const buf = state.downloadBuffers.get(data.transferId);
+  if (!buf) return;
+  buf.chunks[data.chunkIndex] = data.data;
+  buf.nextIndex = data.chunkIndex + 1;
+  if (!data.isLastChunk) {
+    requestNextDownloadChunk(data.transferId);
+  }
+}
+
+function finalizeDownload(transferId){
+  const buf = state.downloadBuffers.get(transferId);
+  if (!buf) return;
+  const binaryParts = buf.chunks.map(b64 => {
+    const bin = atob(b64);
+    const arr = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+    return arr;
+  });
+  const blob = new Blob(binaryParts);
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = buf.filename;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 4000);
+  state.downloadBuffers.delete(transferId);
+}
+
+function deleteFile(filename, direction){
+  send({ type: 'delete_file', filename, direction });
+}
+
+// ---------------------------------------------------------------- transfers
+
+function registerTransfer(id, filename, direction, size){
+  state.transfers.set(id, { filename, direction, size, progress: 0, status: 'Queued' });
+  renderTransfers();
+}
+
+function updateTransfer(id, patch){
+  const t = state.transfers.get(id);
+  if (!t) return;
+  Object.assign(t, patch);
+  renderTransfers();
+
+  // continue chunked upload once an ack for the previous chunk arrives
+  const pending = pendingUploads.get(id);
+  if (pending && pending.awaitingAck) {
+    pending.awaitingAck = false;
+    sendNextUploadChunk(id);
+  }
+}
+
+function renderTransfers(){
+  const rows = [...state.transfers.entries()].reverse();
+  $('transferList').innerHTML = rows.length ? rows.map(([id, t]) => `
+    <div class="file-row" style="flex-wrap:wrap;">
+      <span class="name">${t.direction === 'upload' ? '⬆' : '⬇'} ${esc(t.filename)}</span>
+      <span class="meta">${esc(t.status)}${t.size ? ' · ' + fmtBytes(t.size) : ''}</span>
+      <div class="progress" style="flex-basis:100%;">
+        <div class="progress-fill ${t.status === 'Completed' ? 'done' : ''} ${t.status === 'Failed' ? 'error' : ''}" style="width:${Math.min(100, Math.round(t.progress || 0))}%;"></div>
+      </div>
+    </div>`).join('') : '<div class="status-line">No transfers yet.</div>';
+}
+
+// ----------------------------------------------------------------- settings
+
+function setTheme(mode){
+  localStorage.setItem('dexile-theme', mode);
+  applyTheme(mode);
+  document.querySelectorAll('#themeSeg button').forEach(b => b.classList.toggle('active', b.dataset.theme === mode));
+}
+function applyTheme(mode){
+  if (mode === 'system') document.documentElement.removeAttribute('data-theme');
+  else document.documentElement.setAttribute('data-theme', mode);
+}
+function loadTheme(){
+  const mode = localStorage.getItem('dexile-theme') || 'system';
+  applyTheme(mode);
+  document.querySelectorAll('#themeSeg button').forEach(b => b.classList.toggle('active', b.dataset.theme === mode));
+}
+
+function setFps(v){
+  state.screenFps = parseInt(v, 10);
+  $('fpsVal').textContent = v;
+  if (state.screenSubscribed) send({ type: 'screen_subscribe', fps: state.screenFps });
+}
+
+// -------------------------------------------------------------------- init
+
+document.addEventListener('DOMContentLoaded', () => {
+  loadTheme();
+  initTouchpad();
+  initKeyboardInput();
+  initFileDrop();
+  document.getElementById('serverAddr').value = localStorage.getItem('dexile-server') || 'localhost:3000';
+  document.getElementById('serverAddr').addEventListener('change', (e) => localStorage.setItem('dexile-server', e.target.value));
+});
+
+window.addEventListener('beforeunload', () => { if (state.ws) state.ws.close(); });
+
+// exposed API used by inline handlers
+window.Dexile = {
+  connect, disconnect, navigate, toggleSidebar, toggleFullscreen,
+  toggleScreenSubscribe, setFitMode, sendGesture, toggleModifier, sendSpecialKey,
+  downloadFile, deleteFile, setTheme, setFps
+};
+
+})();
+</script>
+</body>
+</html>
